@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +55,19 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+        Button tempprogram = (Button) findViewById(R.id.tempprogram); //button with id tempprogram
+        tempprogram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Pop.class));
+            }
+        });
+
+        Button popupbuttonbooks = (Button) findViewById(R.id.popupwindowbuttonbookstore);
+        Button popupbuttonquestions = (Button) findViewById(R.id.popupwindowbuttonquestions);
+
     }
 
     @Override

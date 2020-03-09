@@ -12,4 +12,7 @@
     <string name="menu_help">help</string>
     <string name="menu_logout">Log Out</string>
     <string name="menu_messages">Messages</string>
+    <string name="temp_program">tempprogram</string>
+    <string name="button_popup_bookstore">bookstore</string>
+    <string name="button_popup_questions">questions</string>
 </resources>
