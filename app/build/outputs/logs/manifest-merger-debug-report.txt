@@ -8,6 +8,7 @@ MERGED from [androidx.navigation:navigation-ui:2.0.0] C:\Users\20181783\.gradle\
 MERGED from [com.google.android.material:material:1.0.0] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\42dfa75dd97f65b6f13ab377026b4c61\material-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat:1.0.2] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\daee6df2c31aab579f82be9a195199ab\appcompat-1.0.2\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-auth:16.0.5] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5f31687190cac06d938a450011b79ab4\jetified-firebase-auth-16.0.5\AndroidManifest.xml:17:1-42:12
+MERGED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:15:1-26:12
 MERGED from [com.google.android.gms:play-services-flags:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\0d591564b3e6b778da35397d9aa9ac79\play-services-flags-16.0.1\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-auth-interop:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\c3c5d59fdf690dd265b842996ab817e2\jetified-firebase-auth-interop-16.0.1\AndroidManifest.xml:2:1-10:12
 MERGED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\89481fb115dbbd3b00b90ed0a0bbe32b\jetified-play-services-base-16.0.1\AndroidManifest.xml:17:1-29:12
@@ -70,6 +71,8 @@ INJECTED from C:\Users\20181783\OneDrive - TU Eindhoven\Documents\School\2IS70\D
 		ADDED from C:\Users\20181783\OneDrive - TU Eindhoven\Documents\School\2IS70\DBL_App-Development_Group_9\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
 ADDED from C:\Users\20181783\OneDrive - TU Eindhoven\Documents\School\2IS70\DBL_App-Development_Group_9\app\src\main\AndroidManifest.xml:5:5-66
+MERGED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:24:5-67
+MERGED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:24:5-67
 	android:name
 		ADDED from C:\Users\20181783\OneDrive - TU Eindhoven\Documents\School\2IS70\DBL_App-Development_Group_9\app\src\main\AndroidManifest.xml:5:22-64
 application
@@ -150,6 +153,8 @@ MERGED from [androidx.appcompat:appcompat:1.0.2] C:\Users\20181783\.gradle\cache
 MERGED from [androidx.appcompat:appcompat:1.0.2] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\daee6df2c31aab579f82be9a195199ab\appcompat-1.0.2\AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-auth:16.0.5] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5f31687190cac06d938a450011b79ab4\jetified-firebase-auth-16.0.5\AndroidManifest.xml:21:5-44
 MERGED from [com.google.firebase:firebase-auth:16.0.5] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5f31687190cac06d938a450011b79ab4\jetified-firebase-auth-16.0.5\AndroidManifest.xml:21:5-44
+MERGED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:19:5-21:41
 MERGED from [com.google.android.gms:play-services-flags:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\0d591564b3e6b778da35397d9aa9ac79\play-services-flags-16.0.1\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-flags:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\0d591564b3e6b778da35397d9aa9ac79\play-services-flags-16.0.1\AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-auth-interop:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\c3c5d59fdf690dd265b842996ab817e2\jetified-firebase-auth-interop-16.0.1\AndroidManifest.xml:5:5-44
@@ -274,6 +279,10 @@ ADDED from [com.google.firebase:firebase-auth:16.0.5] C:\Users\20181783\.gradle\
 		ADDED from [com.google.firebase:firebase-auth:16.0.5] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5f31687190cac06d938a450011b79ab4\jetified-firebase-auth-16.0.5\AndroidManifest.xml:38:17-82
 	android:name
 		ADDED from [com.google.firebase:firebase-auth:16.0.5] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5f31687190cac06d938a450011b79ab4\jetified-firebase-auth-16.0.5\AndroidManifest.xml:37:17-109
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:23:5-79
+	android:name
+		ADDED from [com.google.firebase:firebase-storage:16.0.4] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\5de917d8cced94c9170da17c0e6a52da\jetified-firebase-storage-16.0.4\AndroidManifest.xml:23:22-76
 activity#com.google.android.gms.common.api.GoogleApiActivity
 ADDED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\20181783\.gradle\caches\transforms-2\files-2.1\89481fb115dbbd3b00b90ed0a0bbe32b\jetified-play-services-base-16.0.1\AndroidManifest.xml:23:9-26:75
 	android:exported

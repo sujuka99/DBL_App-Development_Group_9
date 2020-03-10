@@ -1196,6 +1196,7 @@ id icon_only
 id ifRoom
 id image
 id imageView
+id imageView2
 id info
 id invisible
 id italic
