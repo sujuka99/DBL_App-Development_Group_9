@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\20181783\\OneDrive - TU Eindhoven\\Documents\\School\\2IS70\\DBL_App-Development_Group_9\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ldltr-v21\\values-ldltr-v21.xml",
+            "outputFile": "C:\\Users\\20182261\\Documents\\GitHub\\DBL_App-Development_Group_9\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ldltr-v21\\values-ldltr-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\20181783\\.gradle\\caches\\transforms-2\\files-2.1\\daee6df2c31aab579f82be9a195199ab\\appcompat-1.0.2\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
+                    "source": "C:\\Users\\20182261\\.gradle\\caches\\transforms-2\\files-2.1\\daee6df2c31aab579f82be9a195199ab\\appcompat-1.0.2\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
