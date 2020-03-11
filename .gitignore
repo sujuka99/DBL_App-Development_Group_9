@@ -1,5 +1,6 @@
 *.iml
 .gradle/
+.gradle\
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -8,6 +9,7 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+\build
 build/
 /captures
 
@@ -32,6 +34,7 @@ captures/
 # IntelliJ
 *.iml
 .idea/workspace.xml
+.idea\workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/assetWizardSettings.xml
