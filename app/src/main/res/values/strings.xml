@@ -9,7 +9,25 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_myProfile">My Profile</string>
-    <string name="menu_help">help</string>
+    <string name="menu_help">Help</string>
     <string name="menu_logout">Log Out</string>
     <string name="menu_messages">Messages</string>
+
+    <string name="help_content">
+        <big><b>Welcome to the B&amp;Q help page.</b></big>\n\n
+        <p>On this page you can find information about the app, and answers to Frequently Asked Questions (FAQ).</p>\n\n
+        <big><b>General Information</b></big>\n\n
+        <p><b>B&amp;Q</b> is an app for students, by students.\n
+            The app facilitates the selling of old books, and offers a place where you can ask study-related questions.\n
+            To see the books people are selling, go to the home page and tap on a study. In the pop-up, select \"Books\".\n
+            To see the questions people are asking, go to the home page and tap on a study. This time, select \"Questions\" in the pop-up.</p>\n\n
+        <big><b>FAQ</b></big>\n\n
+        <p><b>How do I pay for a book?</b>\n
+            You have to discuss payment methods with the seller.\n\n
+            <b>Who answers my questions? Can I trust them?</b>\n
+            Your questions are answered by other users of the app. Our users are mostly comprised of fellow students.\n\n
+            <b>How can I report abuse?</b>\n
+            You can report users from their profile page. Reports are handled by administrators.\n\n
+        </p>
+    </string>
 </resources>
