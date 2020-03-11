@@ -1,13 +1,17 @@
 package com.example.bq.profiletest;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.bq.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -20,6 +24,10 @@ import java.util.UUID;
  * It offers functionality to load and edit profile data for users.
  */
 public class ProfileManager {
+
+    private static ProfileManager instance;
+
+    private ProfileManager() {}
 
     // This refers to the root of the database
     StorageReference ref = FirebaseStorage.getInstance().getReference();
@@ -52,14 +60,25 @@ public class ProfileManager {
     }
 
     /**
-     * Set the {@link ProfileData} for the
-     * @param id
-     * @param data
+     * Update the {@link ProfileData} for the specified user in Firebase
+     * Main usage is meant for fully filled in {@link ProfileData} object with no null fields, even
+     * if a field is not updated, but will ignore null fields while updating.
+     * @param id - The ID of the user
+     * @param data - The profile data to be stored in firebase
      */
-    public void setProfileData(UUID id, ProfileData data){
+    public void setProfileData(@NonNull UUID id, @NonNull ProfileData data){
+        if(data.profilePicture != null){
+            setProfilePicture(id, data.profilePicture);
+        }
 
     }
 
+    /**
+     * Download the profile picture of the desired user and return the location of where it's stored
+     * for reference.
+     * @param id - ID of the desired user
+     * @return - Uri which points to the image location
+     */
     public Uri getProfilePicture(UUID id) {
         final Uri[] results = {null};
 
@@ -87,6 +106,11 @@ public class ProfileManager {
         return results[0];
     }
 
+    /**
+     * Download the default profile picture and return the location of where it's stored
+     * for reference.
+     * @return - Uri which points to the image location
+     */
     public Uri getDefaultProfilePicture() {
         final Uri[] results = {null};
 
@@ -113,5 +137,40 @@ public class ProfileManager {
         });
 
         return results[0];
+    }
+
+    /**
+     * Upload a profile picture to the firebase storage for a user
+     * @param id - The ID of the desired user
+     * @param path - The Uri pointer to the picture to be uploaded
+     */
+    public void setProfilePicture(@NonNull UUID id, @NonNull Uri path){
+        StorageReference storageRef = ref.child("users/" + id.toString() +"/profile.jpg");
+
+        storageRef.putFile(path).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("setProfilePicture: ", "Failed due to an: " +
+                        exception.getMessage());
+                exception.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * ProfileManager uses the singleton design pattern to make sure that only one ProfileManager
+     * exists and can upload/download from the Firebase server at a time.
+     * @return - The singleton instance of {@link ProfileManager}
+     */
+    public static ProfileManager getInstance(){
+        if(instance == null){
+            instance = new ProfileManager();
+        }
+        return instance;
     }
 }
