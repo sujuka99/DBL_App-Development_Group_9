@@ -16,6 +16,10 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class Register extends AppCompatActivity {
     EditText mFullName, mEmail, mPassword;
@@ -23,6 +27,7 @@ public class Register extends AppCompatActivity {
     TextView mLoginBtn;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
+    DatabaseReference reference;
 
 
     @Override
@@ -43,6 +48,7 @@ public class Register extends AppCompatActivity {
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String fullName = mFullName.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
@@ -68,11 +74,24 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
+                            String userID = user.getUid();
+
+                            reference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("id", userID);
+                            hashMap.put("fullName", fullName);
+                            hashMap.put("imageURL", "default");
+
+                            reference.setValue(hashMap);
+
                             // Sign in success, display message, redirect to Main activity
                             Toast.makeText(Register.this,"User created", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
                             progressBar.setVisibility(View.GONE);
-                            //FirebaseUser user = mAuth.getCurrentUser();
+                            finish();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -90,6 +109,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),Login.class));
+                finish();
             }
         });
 

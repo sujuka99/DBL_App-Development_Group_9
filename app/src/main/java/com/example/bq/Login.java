@@ -41,10 +41,9 @@ public class Login extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         // If the user is already logged in go to the Main activity
-        // Laurens turned this of because i can not logout if you can logout this can be turned on again
-//        if(mAuth.getCurrentUser() != null){
-//            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-//        }
+        if(mAuth.getCurrentUser() != null){
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        }
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +77,7 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this,"Logged in succesfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
                             progressBar.setVisibility(View.GONE);
+                            finish();
                             //FirebaseUser user = mAuth.getCurrentUser();
 
                         } else {
@@ -94,6 +94,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),Register.class));
+                finish();
             }
         });
 
