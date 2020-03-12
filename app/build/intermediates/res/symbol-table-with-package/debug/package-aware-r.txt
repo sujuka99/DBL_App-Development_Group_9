@@ -1308,7 +1308,7 @@ id text_home
 id text_input_password_toggle
 id text_logOut
 id text_messages
-id text_myProfile
+id text_myProfil
 id textinput_counter
 id textinput_error
 id textinput_helper_text

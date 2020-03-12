@@ -1307,7 +1307,7 @@ int id text_home 0x7f0800ce
 int id text_input_password_toggle 0x7f0800cf
 int id text_logOut 0x7f0800d0
 int id text_messages 0x7f0800d1
-int id text_myProfile 0x7f0800d2
+int id text_myProfil 0x7f0800d2
 int id textinput_counter 0x7f0800d3
 int id textinput_error 0x7f0800d4
 int id textinput_helper_text 0x7f0800d5
