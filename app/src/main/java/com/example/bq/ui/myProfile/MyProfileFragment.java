@@ -1,6 +1,7 @@
 package com.example.bq.ui.myProfile;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
 
+import org.w3c.dom.Text;
+
 public class MyProfileFragment extends Fragment {
 
     private MyProfileViewModel myProfileViewModel;
@@ -23,13 +26,9 @@ public class MyProfileFragment extends Fragment {
         myProfileViewModel =
                 ViewModelProviders.of(this).get(MyProfileViewModel.class);
         View root = inflater.inflate(R.layout.fragment_myprofile, container, false);
-        /*final TextView textView = root.findViewById(R.id.text_myProfil);
-        myProfileViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
+
+        //TextView text = root.findViewById(R.id.text_myProfil);
+        //Log.d("Default String:", text.getText().toString());
         return root;
     }
 }

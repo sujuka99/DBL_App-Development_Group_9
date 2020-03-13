@@ -1,22 +1,23 @@
 package com.example.bq.profiletest;
 
-import android.app.ProgressDialog;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.bq.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.util.UUID;
+import java.util.HashMap;
 
 /**
  * ProfileManager is a /static/ class that will take care of all interactions related to user
@@ -44,19 +45,42 @@ public class ProfileManager {
      * @param id - Unique identifier of the user
      * @return An instance of {@link ProfileData} containing all data found for the id
      */
-    public ProfileData getProfileData(@NonNull UUID id) {
+    public ProfileData getProfileData(@NonNull String id) {
         ProfileData data = new ProfileData();
 
         // Download the image from the Firebase storage
         data.profilePicture = getProfilePicture(id);
 
-        // Get the other profile parameters from the database
-        data.username = "Test";
-        data.biography = "This is a test";
-        data.university = "Tu/e";
-        data.study = "Computer Science";
+        HashMap<String, String> result = getUserFromDatabase(id);
+
+        // Set the other profile parameters from the database
+        data.username = result.containsKey("fullName") ? result.get("fullName") : null;
+        data.biography = result.containsKey("biography") ? result.get("biography") : null;
+        data.university = result.containsKey("university") ? result.get("university") : null;
+        data.study = result.containsKey("study") ? result.get("study") : null;
 
         return data;
+    }
+
+    public HashMap<String, String> getUserFromDatabase(String id){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(id);
+
+        final HashMap<String, String>[] result = new HashMap[0];
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                result[0] = (HashMap<String,String>) dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseError.toException().printStackTrace();
+            }
+        });
+
+        return result[0];
     }
 
     /**
@@ -66,11 +90,29 @@ public class ProfileManager {
      * @param id - The ID of the user
      * @param data - The profile data to be stored in firebase
      */
-    public void setProfileData(@NonNull UUID id, @NonNull ProfileData data){
+    public void setProfileData(@NonNull String id, @NonNull ProfileData data){
         if(data.profilePicture != null){
             setProfilePicture(id, data.profilePicture);
         }
 
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(id);
+
+        HashMap<String, Object> childUpdates = new HashMap<>();
+        if(data.username != null){
+            childUpdates.put("fullName", data.username);
+        }
+        if(data.study != null){
+            childUpdates.put("study", data.study);
+        }
+        if(data.university != null){
+            childUpdates.put("university", data.university);
+        }
+        if(data.biography != null){
+            childUpdates.put("biography", data.biography);
+        }
+
+        userRef.updateChildren(childUpdates);
     }
 
     /**
@@ -79,12 +121,12 @@ public class ProfileManager {
      * @param id - ID of the desired user
      * @return - Uri which points to the image location
      */
-    public Uri getProfilePicture(UUID id) {
+    public Uri getProfilePicture(String id) {
         final Uri[] results = {null};
 
         // Get the storage reference of the user it's profile picture
         // Which is stored as "users/<ID>/profile.jpg"
-        StorageReference storageRef = ref.child("users/" + id.toString() + "/profile.jpg");
+        StorageReference storageRef = ref.child("users/" + id + "/profile.jpg");
 
         // Attempt to download the image and get the location Uri
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -144,8 +186,8 @@ public class ProfileManager {
      * @param id - The ID of the desired user
      * @param path - The Uri pointer to the picture to be uploaded
      */
-    public void setProfilePicture(@NonNull UUID id, @NonNull Uri path){
-        StorageReference storageRef = ref.child("users/" + id.toString() +"/profile.jpg");
+    public void setProfilePicture(@NonNull String id, @NonNull Uri path){
+        StorageReference storageRef = ref.child("users/" + id +"/profile.jpg");
 
         storageRef.putFile(path).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
