@@ -66,6 +66,7 @@ public class Register extends AppCompatActivity {
                     mPassword.setError("Password must contain 6 characters");
                     return;
                 }
+                mRegisterBtn.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
                 //register the user
