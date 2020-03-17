@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bq.profiletest.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
@@ -81,12 +82,16 @@ public class Register extends AppCompatActivity {
                             String userID = user.getUid();
 
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-                            HashMap<String, String> hashMap = new HashMap<>();
+
+                            /**HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", userID);
                             hashMap.put("fullName", fullName);
                             hashMap.put("imageURL", "default");
-
-                            reference.setValue(hashMap);
+                            */
+                            UserData data = new UserData();
+                            data.username = fullName;
+                            data.id = userID;
+                            reference.setValue(data);
 
                             // Sign in success, display message, redirect to Main activity
                             Toast.makeText(Register.this,"User created", Toast.LENGTH_SHORT).show();

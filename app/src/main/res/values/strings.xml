@@ -30,4 +30,5 @@
             You can report users from their profile page. Reports are handled by administrators.\n\n
         </p>
     </string>
+    <string name="profilepicture">ProfilePicture</string>
 </resources>

@@ -1,19 +1,12 @@
 package com.example.bq.ui.myProfile;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class MyProfileViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private String id;
 
     public MyProfileViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is the fragment");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
+        id = "";
     }
 }
