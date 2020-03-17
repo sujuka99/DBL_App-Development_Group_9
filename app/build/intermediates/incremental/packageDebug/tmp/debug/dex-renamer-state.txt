@@ -1,0 +1,7 @@
+#Tue Mar 17 16:04:19 CET 2020
+base.0=C\:\\Users\\Gebruiker\\Documents\\GitHub\\DBL_App-Development_Group_9\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex
+path.1=classes.dex
+renamed.1=classes2.dex
+path.0=classes.dex
+renamed.0=classes.dex
+base.1=C\:\\Users\\Gebruiker\\Documents\\GitHub\\DBL_App-Development_Group_9\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
