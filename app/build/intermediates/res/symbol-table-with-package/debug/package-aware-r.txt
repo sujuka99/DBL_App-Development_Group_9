@@ -1247,6 +1247,7 @@ id progressBar
 id progress_circular
 id progress_horizontal
 id radio
+id recyclerView
 id right
 id right_icon
 id right_side
@@ -1407,6 +1408,7 @@ layout fragment_home
 layout fragment_logout
 layout fragment_messages
 layout fragment_myprofile
+layout fragment_users
 layout mtrl_layout_snackbar
 layout mtrl_layout_snackbar_include
 layout nav_header_main
@@ -1507,6 +1509,7 @@ string google_api_key
 string google_app_id
 string google_crash_reporting_api_key
 string google_storage_bucket
+string hello_blank_fragment
 string hide_bottom_view_on_scroll_behavior
 string menu_help
 string menu_home
