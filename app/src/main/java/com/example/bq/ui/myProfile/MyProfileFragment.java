@@ -50,11 +50,10 @@ public class MyProfileFragment extends Fragment implements DataChangeObserver {
     }
 
     public void updateProfile(UserData data){
-        fullName.setText(data.username == null ? "Err: No Name" : data.username);
-        university.setText(data.university == null ? "Err: No Uni" : data.university);
-        study.setText(data.study == null ? "Err: No Study" : data.study);
-        biography.setText(data.biography == null ? "Err: No Bio" : data.biography);
-        //profilePicture.setImageURI(data.profilePicture == null ? Uri.EMPTY : data.profilePicture);
+        fullName.setText(data.username == null ? "No Name" : data.username);
+        university.setText(data.university == null ? "No University" : data.university);
+        study.setText(data.study == null ? "No Study" : data.study);
+        biography.setText(data.biography == null ? "No Biography" : data.biography);
     }
 
     public void initializeComponents(View root){
