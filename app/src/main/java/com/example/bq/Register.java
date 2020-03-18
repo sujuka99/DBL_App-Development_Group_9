@@ -1,8 +1,5 @@
 package com.example.bq;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,14 +10,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.bq.profiletest.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
 
 public class Register extends AppCompatActivity {
     EditText mFullName, mEmail, mPassword;
@@ -83,14 +83,10 @@ public class Register extends AppCompatActivity {
 
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
 
-                            /**HashMap<String, String> hashMap = new HashMap<>();
-                            hashMap.put("id", userID);
-                            hashMap.put("fullName", fullName);
-                            hashMap.put("imageURL", "default");
-                            */
                             UserData data = new UserData();
-                            data.username = fullName;
+
                             data.id = userID;
+                            data.fullName = fullName;
                             reference.setValue(data);
 
                             // Sign in success, display message, redirect to Main activity

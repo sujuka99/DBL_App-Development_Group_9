@@ -11,15 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
-import com.example.bq.profiletest.DataChangeObserver;
-import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.UserData;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MyProfileFragment extends Fragment implements DataChangeObserver {
+public class MyProfileFragment extends Fragment {
 
     private MyProfileViewModel viewModel;
 
@@ -31,32 +30,43 @@ public class MyProfileFragment extends Fragment implements DataChangeObserver {
 
     private ImageView profilePicture;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        // First we initialize the viewmodel of this fragment
-        viewModel =
-                ViewModelProviders.of(this).get(MyProfileViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // First we initialize the ViewModel of this fragment
+        viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
 
         // Then we load in our layout
         View root = inflater.inflate(R.layout.fragment_myprofile, container, false);
+
+        // And load the references to our components
         initializeComponents(root);
+
         // Next up we get the ID of the current logged in user
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // And request the data we need for the profile
-        DataManager.getInstance().loadUserData(id, this);
-        // Finally we request the profile picture
-        DataManager.getInstance().loadProfilePicture(id, this);
+
+        // And let the ViewModel load the user its data
+        loadDataInVM(id);
+
         return root;
     }
 
-    public void updateProfile(UserData data){
-        fullName.setText(data.username == null ? "No Name" : data.username);
+    /**
+     * Update all components with the data specified in the {@link UserData} object
+     *
+     * @param data - The {@link UserData} that will be used to update the profile
+     */
+    public void updateProfile(UserData data) {
+        fullName.setText(data.fullName == null ? "No Name" : data.fullName);
         university.setText(data.university == null ? "No University" : data.university);
         study.setText(data.study == null ? "No Study" : data.study);
         biography.setText(data.biography == null ? "No Biography" : data.biography);
     }
 
-    public void initializeComponents(View root){
+    /**
+     * Load a reference to the components in the {@link View}
+     *
+     * @param root - The {@link View} in which the components can be found
+     */
+    public void initializeComponents(View root) {
         fullName = root.findViewById(R.id.fullName);
         university = root.findViewById(R.id.university);
         study = root.findViewById(R.id.study);
@@ -65,13 +75,29 @@ public class MyProfileFragment extends Fragment implements DataChangeObserver {
         progressBar = root.findViewById(R.id.profileProgress);
     }
 
-    @Override
-    public void notifyOfDataChange(Object obj) {
-        if(obj instanceof UserData){
-            progressBar.setVisibility(View.GONE);
-            updateProfile((UserData) obj);
-        }else if(obj instanceof Uri){
-            profilePicture.setImageURI((Uri) obj);
-        }
+    /**
+     * Let the ViewModel load the data of the user and register to data changes
+     * @param id
+     */
+    public void loadDataInVM(String id) {
+        viewModel.loadUser(id);
+
+        final Observer<UserData> userDataObserver = new Observer<UserData>() {
+            @Override
+            public void onChanged(final UserData data) {
+                progressBar.setVisibility(View.GONE);
+                updateProfile(data);
+            }
+        };
+
+        final Observer<Uri> profilePictureObserver = new Observer<Uri>() {
+            @Override
+            public void onChanged(final Uri uri) {
+                profilePicture.setImageURI(uri);
+            }
+        };
+
+        viewModel.getUserData().observe(this, userDataObserver);
+        viewModel.getProfilePicture().observe(this, profilePictureObserver);
     }
 }
