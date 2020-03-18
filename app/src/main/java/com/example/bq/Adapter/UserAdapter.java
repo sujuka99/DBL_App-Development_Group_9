@@ -2,6 +2,7 @@ package com.example.bq.Adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bq.MessageActivity;
 import com.example.bq.R;
 import com.example.bq.profiletest.ProfileData;
 import com.example.bq.profiletest.ProfileManager;
@@ -47,6 +49,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             //implement the profile pic to be set   (line below sets it to default)
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MessageActivity.class);
+                //intent.putExtra("userid", ProfileData.getId());
+            }
+        });
     }
 
     @Override

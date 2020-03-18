@@ -34,4 +34,6 @@
         android:name="com.example.bq.ui.messages.MessagesFragment"
         android:label="@string/menu_messages"
         tools:layout="@layout/fragment_messages" />
+
+
 </navigation>
