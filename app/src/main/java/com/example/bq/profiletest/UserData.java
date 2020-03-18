@@ -6,6 +6,7 @@ public class UserData {// RECORD TYPE
     public String study;
     public String university;
     public String id;
+    private UserRole role;
 
     public UserData(UserData data) {
         this.fullName = data.fullName;
@@ -13,9 +14,11 @@ public class UserData {// RECORD TYPE
         this.study = data.study;
         this.university = data.university;
         this.id = data.id;
+        this.role = data.role;
     }
 
     public UserData() {
+        role = UserRole.USER;
     }
 
     public String toString() {
@@ -25,3 +28,4 @@ public class UserData {// RECORD TYPE
                 ", university: " + (university == null ? "null" : university) + "}";
     }
 }
+
