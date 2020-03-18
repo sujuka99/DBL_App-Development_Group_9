@@ -1,4 +1,4 @@
-package com.example.bq.ui.logOut;
+package com.example.bq.ui.settings;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,15 +14,15 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
 
-public class LogOutFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
 
-    private LogOutViewModel logOutViewModel;
+    private SettingsViewModel logOutViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         logOutViewModel =
-                ViewModelProviders.of(this).get(LogOutViewModel.class);
+                ViewModelProviders.of(this).get(SettingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_logout, container, false);
         final TextView textView = root.findViewById(R.id.text_logOut);
         logOutViewModel.getText().observe(this, new Observer<String>() {
