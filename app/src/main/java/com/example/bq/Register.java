@@ -99,6 +99,7 @@ public class Register extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(Register.this,"Registration failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
+                            mRegisterBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 });

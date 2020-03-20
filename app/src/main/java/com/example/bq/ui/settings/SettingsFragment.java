@@ -1,36 +1,26 @@
 package com.example.bq.ui.settings;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.EditText;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.bq.R;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
 
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.preferences, rootKey);
+        final EditTextPreference editTextPreference = findPreference("random_text");
 
-    private SettingsViewModel logOutViewModel;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        logOutViewModel =
-                ViewModelProviders.of(this).get(SettingsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_logout, container, false);
-        final TextView textView = root.findViewById(R.id.text_logOut);
-        logOutViewModel.getText().observe(this, new Observer<String>() {
+        editTextPreference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onBindEditText(@NonNull EditText editText) {
+                editTextPreference.setSummary(editText.getText());
             }
         });
-        return root;
     }
 }
