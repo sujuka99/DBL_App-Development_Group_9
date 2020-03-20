@@ -6,7 +6,10 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -24,12 +27,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     FirebaseUser user;
-    //test
+    public static String major;
+    Button butBCS;
+    Button butBAM;
+    Button butBAP;
+    Button butBBE;
+    Button butBDS;
+    Button butBEE;
+
 
     @Override
     protected void onStart(){
@@ -41,6 +54,53 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(),Login.class));
             finish();
         }
+
+        butBCS = findViewById(R.id.buttonBCS);
+        butBAM = findViewById(R.id.buttonBAM);
+        butBAP = findViewById(R.id.buttonBAP);
+        butBBE = findViewById(R.id.buttonBBE);
+        butBDS = findViewById(R.id.buttonBDS);
+        butBEE = findViewById(R.id.buttonBEE);
+
+        butBCS.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BCS";
+
+            }
+        });
+        butBAM.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BAM";
+            }
+        });
+        butBAP.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BAP";
+            }
+        });
+        butBBE.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BBE";
+            }
+        });
+        butBDS.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BDS";
+            }
+        });
+        butBEE.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BEE";
+            }
+        });
+
+
     }
 
     @Override
@@ -105,5 +165,42 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(new Intent(getApplicationContext(), Login.class));
 //        finish();
 //    }
+
+    public void onButtonShowPopupWindowClick(View view) {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+    }
+
+    public void onBookClick(View v) {
+        startActivity(new Intent(getApplicationContext(),Books.class));
+
+    }
+    public void onQuestionsClick(View v) {
+        startActivity(new Intent(getApplicationContext(),Questions.class));
+
+    }
+
 
 }
