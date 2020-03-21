@@ -32,4 +32,12 @@
     </string>
     <string name="profilepicture">ProfilePicture</string>
     <string name="profileMessage">Message</string>
+    <string name="home_button_BCS">BCS</string>
+    <string name="home_button_BAM">BAM</string>
+    <string name="home_button_BAP">BAP</string>
+    <string name="home_button_BBE">BBE</string>
+    <string name="home_button_BDS">BDS</string>
+    <string name="home_button_BEE">BEE</string>
+    <string name="popup_books_button">Books</string>
+    <string name="popup_questions_button">Questions</string>
 </resources>

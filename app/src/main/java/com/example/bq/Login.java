@@ -85,6 +85,7 @@ public class Login extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(Login.this,"" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
+                            mLoginBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 });
