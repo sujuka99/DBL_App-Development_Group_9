@@ -51,43 +51,43 @@ public class Questions extends AppCompatActivity {
         dataSet.add(new ArrayList<String>());
         dataSet.get(0).add("How can I answer this question?");
         dataSet.get(0).add("CrazyGirl99");
-        dataSet.get(0).add("19m ago");
+        dataSet.get(0).add("19m");
         dataSet.add(new ArrayList<String>());
         dataSet.get(1).add("How do I solve this error?");
         dataSet.get(1).add("CoderBoy74");
-        dataSet.get(1).add("4h ago");
+        dataSet.get(1).add("4h");
         dataSet.add(new ArrayList<String>());
         dataSet.get(2).add("Who do I contact for this problem?");
         dataSet.get(2).add("NeedHelp55");
-        dataSet.get(2).add("1d ago");
+        dataSet.get(2).add("1d");
         dataSet.add(new ArrayList<String>());
         dataSet.get(3).add("Question Title");
-        dataSet.get(3).add("Asked by <author>");
-        dataSet.get(3).add("<time> ago");
+        dataSet.get(3).add("<author>");
+        dataSet.get(3).add("<time>");
         dataSet.add(new ArrayList<String>());
         dataSet.get(4).add("Question Title");
-        dataSet.get(4).add("Asked by <author>");
-        dataSet.get(4).add("<time> ago");
+        dataSet.get(4).add("<author>");
+        dataSet.get(4).add("<time>");
         dataSet.add(new ArrayList<String>());
         dataSet.get(5).add("Question Title");
-        dataSet.get(5).add("Asked by <author>");
-        dataSet.get(5).add("<time> ago");
+        dataSet.get(5).add("<author>");
+        dataSet.get(5).add("<time>");
         dataSet.add(new ArrayList<String>());
         dataSet.get(6).add("Question Title");
-        dataSet.get(6).add("Asked by <author>");
-        dataSet.get(6).add("<time> ago");
+        dataSet.get(6).add("<author>");
+        dataSet.get(6).add("<time>");
         dataSet.add(new ArrayList<String>());
         dataSet.get(7).add("Question Title");
-        dataSet.get(7).add("Asked by <author>");
-        dataSet.get(7).add("<time> ago");
+        dataSet.get(7).add("<author>");
+        dataSet.get(7).add("<time>");
         dataSet.add(new ArrayList<String>());
         dataSet.get(8).add("Question Title");
-        dataSet.get(8).add("Asked by <author>");
-        dataSet.get(8).add("<time> ago");
+        dataSet.get(8).add("<author>");
+        dataSet.get(8).add("<time>");
         dataSet.add(new ArrayList<String>());
         dataSet.get(9).add("Question Title");
-        dataSet.get(9).add("Asked by <author>");
-        dataSet.get(9).add("<time> ago");
+        dataSet.get(9).add("<author>");
+        dataSet.get(9).add("<time>");
     }
 }
 
@@ -133,15 +133,9 @@ class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionViewH
     @Override
     public void onBindViewHolder(@NonNull QuestionViewHolder holder, final int position) {
 
-        try {
-            holder.questionTitle.setText(qDataSet.get(position).get(0));
-            holder.questionAuthor.setText("Asked by " + qDataSet.get(position).get(1));
-            holder.questionAge.setText(qDataSet.get(position).get(2));
-        } catch (ArrayIndexOutOfBoundsException e) {
-            holder.questionTitle.setText("Question Title");
-            holder.questionAuthor.setText("Asked by author");
-            holder.questionAge.setText("time ago");
-        }
+        holder.questionTitle.setText(qDataSet.get(position).get(0));
+        holder.questionAuthor.setText("Asked by " + qDataSet.get(position).get(1));
+        holder.questionAge.setText(qDataSet.get(position).get(2) + " ago");
 
         holder.questionLayout.setOnClickListener(new View.OnClickListener() {
             @Override
