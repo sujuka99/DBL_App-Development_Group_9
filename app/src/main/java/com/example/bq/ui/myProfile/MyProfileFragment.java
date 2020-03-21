@@ -44,9 +44,9 @@ public class MyProfileFragment extends Fragment {
         // Next up we get the ID of the current logged in user
         String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        loadProfile(id);
+        //loadProfile(id);
         // And let the ViewModel load the user its data
-        //loadDataInVM(id);
+        loadDataInVM(id);
 
         return root;
     }
