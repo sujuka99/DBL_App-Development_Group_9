@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <EditText
+        android:id="@+id/edittext_questions"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="35dp" />
+
+
+    <Button
+        android:id="+id/add_question_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="add question"
+        tools:layout_editor_absoluteX="195dp"
+        tools:layout_editor_absoluteY="681dp" />
+
+    <TextView
+        android:id="@+id/bookstore_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bookstore_text_string"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="60dp" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="579dp" />
+
+    <ListView
+        android:id="@+id/listview_questions"
+        android:layout_width="322dp"
+        android:layout_height="336dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="168dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

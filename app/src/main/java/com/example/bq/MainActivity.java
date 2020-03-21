@@ -20,11 +20,27 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
+<<<<<<< Updated upstream
 import android.widget.Button;
+=======
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+>>>>>>> Stashed changes
 
 public class MainActivity extends AppCompatActivity {
+
+    EditText text_list_questions;
+    Button add_questions;
+    ListView ListView_questions;
+    ArrayList<String> arrayList;
+    ArrayAdapter<String> adapter;
 
     private AppBarConfiguration mAppBarConfiguration;
     //test
@@ -56,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+<<<<<<< Updated upstream
 
         Button tempprogram = (Button) findViewById(R.id.tempprogram); //button with id tempprogram
         tempprogram.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +85,29 @@ public class MainActivity extends AppCompatActivity {
         Button popupbuttonbooks = (Button) findViewById(R.id.popupwindowbuttonbookstore);
         Button popupbuttonquestions = (Button) findViewById(R.id.popupwindowbuttonquestions);
 
+=======
+        text_list_questions = (EditText) findViewById(R.id.edittext_questions);
+        add_questions = (Button) findViewById(R.id.button_add_question);
+        ListView_questions = (ListView) findViewById(R.id.list_questions);
+
+        arrayList = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,
+                arrayList);
+        ListView_questions.setAdapter(adapter);
+
+        onButtonAddQuestionClick();
+    }
+
+    public void onButtonAddQuestionClick() {
+        add_questions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             String result =  text_list_questions.getText().toString();
+              arrayList.add(result);
+              adapter.notifyDataSetChanged();
+            }
+        }
+>>>>>>> Stashed changes
     }
 
     @Override
