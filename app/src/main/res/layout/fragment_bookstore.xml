@@ -19,7 +19,7 @@
 
 
     <Button
-        android:id="+id/add_question_button"
+        android:id="@+id/add_question_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="add question"

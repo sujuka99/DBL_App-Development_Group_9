@@ -23,16 +23,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
-<<<<<<< Updated upstream
 import android.widget.Button;
-=======
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
->>>>>>> Stashed changes
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-<<<<<<< Updated upstream
-
         Button tempprogram = (Button) findViewById(R.id.tempprogram); //button with id tempprogram
         tempprogram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         Button popupbuttonbooks = (Button) findViewById(R.id.popupwindowbuttonbookstore);
         Button popupbuttonquestions = (Button) findViewById(R.id.popupwindowbuttonquestions);
 
-=======
         text_list_questions = (EditText) findViewById(R.id.edittext_questions);
         add_questions = (Button) findViewById(R.id.button_add_question);
         ListView_questions = (ListView) findViewById(R.id.list_questions);
@@ -106,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
               arrayList.add(result);
               adapter.notifyDataSetChanged();
             }
-        }
->>>>>>> Stashed changes
+        });
     }
 
     @Override
