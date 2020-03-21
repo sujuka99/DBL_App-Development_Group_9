@@ -1,10 +1,14 @@
 package com.example.bq.profiletest;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.example.bq.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -56,11 +60,10 @@ public class DataManager {
     }
 
     /**
-     * Download the profile picture of the desired user and return the location of where it's stored
-     * for reference.
+     * Attempt toownload the profile picture data of the desired user and send it to the observer
      *
      * @param id - ID of the desired user
-     * @return - Uri which points to the image location
+     * @param observer - The {@link FirebaseObserver} object that will handle the callback
      */
     public void loadProfilePicture(final String id, final FirebaseObserver observer) {
         StorageReference ref = FirebaseStorage.getInstance().getReference();
@@ -69,12 +72,16 @@ public class DataManager {
         // Which is stored as "users/<ID>/profile.jpg"
         StorageReference storageRef = ref.child("users/" + id + "/profile.jpg");
 
-        // Attempt to download the image and get the location Uri
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        final long ONE_MEGABYTE = 1024 * 1024;
+        // Attempt to download the image and get the bytes
+        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
-            public void onSuccess(Uri uri) {
-                // If the image was found, we notify the requester of the result
-                observer.notifyOfCallback(uri);
+            public void onSuccess(byte[] bytes) {
+                // If the image was found, convert the result into a Bitmap
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                // Send the Bitmap to the observer
+                observer.notifyOfCallback(bmp);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -87,10 +94,9 @@ public class DataManager {
     }
 
     /**
-     * Download the default profile picture and return the location of where it's stored
-     * for reference.
+     * Download the default profile picture and send the data to the observer
      *
-     * @return - Uri which points to the image location
+     * @param observer - The {@link FirebaseObserver} object that will handle the callback
      */
     private void loadDefaultPicture(final FirebaseObserver observer) {
         StorageReference ref = FirebaseStorage.getInstance().getReference();
@@ -99,12 +105,16 @@ public class DataManager {
         // Which is stored as "default/profile.jpg"
         StorageReference storageRef = ref.child("default/profile.jpg");
 
-        // Attempt to download the image and get the location Uri
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        final long ONE_MEGABYTE = 1024 * 1024;
+        // Attempt to download the image and get the bytes
+        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
-            public void onSuccess(Uri uri) {
-                // If the image was found, set the result to the found Uri
-                observer.notifyOfCallback(uri);
+            public void onSuccess(byte[] bytes) {
+                // If the image was found, convert the result into a Bitmap
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                // Send the Bitmap to the observer
+                observer.notifyOfCallback(bmp);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

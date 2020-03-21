@@ -31,4 +31,5 @@
         </p>
     </string>
     <string name="profilepicture">ProfilePicture</string>
+    <string name="profileMessage">Message</string>
 </resources>

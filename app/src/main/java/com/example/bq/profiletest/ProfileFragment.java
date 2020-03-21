@@ -1,27 +1,32 @@
-package com.example.bq.ui.myProfile;
+package com.example.bq.profiletest;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
-import com.example.bq.profiletest.ProfileFragment;
-import com.example.bq.profiletest.UserData;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MyProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
-    private MyProfileViewModel viewModel;
+    private ProfileViewModel viewModel;
+
+    private final String id;
 
     private TextView fullName;
     private TextView university;
@@ -31,31 +36,33 @@ public class MyProfileFragment extends Fragment {
 
     private ImageView profilePicture;
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public ProfileFragment(String id) {
+        super();
+        this.id = id;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         // First we initialize the ViewModel of this fragment
-        viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
 
         // Then we load in our layout
-        View root = inflater.inflate(R.layout.fragment_myprofile, container, false);
+        View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // And load the references to our components
         initializeComponents(root);
 
-        // Next up we get the ID of the current logged in user
-        String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // Also load the messageButton
+        initializeMessageButton(root);
 
-        loadProfile(id);
         // And let the ViewModel load the user its data
-        //loadDataInVM(id);
+        loadDataInVM(id);
 
         return root;
     }
 
-    /**
-     * Update all components with the data specified in the {@link UserData} object
-     *
-     * @param data - The {@link UserData} that will be used to update the profile
-     */
     public void updateProfile(UserData data) {
         fullName.setText(data.fullName == null ? "No Name" : data.fullName);
         university.setText(data.university == null ? "No University" : data.university);
@@ -77,8 +84,27 @@ public class MyProfileFragment extends Fragment {
         progressBar = root.findViewById(R.id.profileProgress);
     }
 
+    public void initializeMessageButton(View root) {
+        Button messageButton = root.findViewById(R.id.messageButton);
+
+        // We can only start messages with other users, so when the user is viewing their own
+        // profile, they cannot select to message themselves
+        if (this.id == FirebaseAuth.getInstance().getCurrentUser().getUid()) {
+            messageButton.setVisibility(View.GONE);
+        } else {
+            messageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Go to message the user
+                    Log.d("Profile", "Going to message the user " + id);
+                }
+            });
+        }
+    }
+
     /**
      * Let the ViewModel load the data of the user and register to data changes
+     *
      * @param id
      */
     public void loadDataInVM(String id) {
@@ -92,22 +118,15 @@ public class MyProfileFragment extends Fragment {
             }
         };
 
-        final Observer<Uri> profilePictureObserver = new Observer<Uri>() {
+        final Observer<Bitmap> profilePictureObserver = new Observer<Bitmap>() {
             @Override
-            public void onChanged(final Uri uri) {
-                profilePicture.setImageURI(uri);
+            public void onChanged(final Bitmap bmp) {
+                profilePicture.setImageBitmap(Bitmap.createScaledBitmap(bmp, profilePicture.getWidth(),
+                        profilePicture.getHeight(), false));
             }
         };
 
         viewModel.getUserData().observe(this, userDataObserver);
         viewModel.getProfilePicture().observe(this, profilePictureObserver);
-    }
-
-    public void loadProfile(String id){
-        ProfileFragment nextFrag= new ProfileFragment(id);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, nextFrag, "findThisFragment")
-                .addToBackStack(null)
-                .commit();
     }
 }
