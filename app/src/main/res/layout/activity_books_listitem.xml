@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/books_layout">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/book_image"
+        android:src="@mipmap/ic_launcher"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="seller"
+        android:id="@+id/book_seller"
+        android:layout_toRightOf="@+id/book_image"
+        android:textColor="#000"
+        android:layout_alignBottom="@+id/book_image"
+        android:layout_marginLeft="30dp"
+        android:textSize="18sp"
+        />
+
+    <TextView
+        android:id="@+id/time_posted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/book_image"
+        android:text="Time posted"
+        android:textColor="#000"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/book_title"
+        android:textColor="#000"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/book_image"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price"
+        android:id="@+id/price"
+        android:textColor="#000"
+        android:layout_toRightOf="@+id/book_image"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="32dp"
+        android:textSize="18sp"
+        />
+
+
+</RelativeLayout>
