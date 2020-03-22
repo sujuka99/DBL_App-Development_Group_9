@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< Updated upstream
       <module fileurl="file://$PROJECT_DIR$/B&amp;Q.iml" filepath="$PROJECT_DIR$/B&amp;Q.iml" />
       <module fileurl="file://$PROJECT_DIR$/DBL_App-Development_Group_9-B&amp;Q.iml" filepath="$PROJECT_DIR$/DBL_App-Development_Group_9-B&amp;Q.iml" group="B&amp;Q" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="B&amp;Q/app" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/../B&amp;Q.iml" filepath="$PROJECT_DIR$/../B&amp;Q.iml" group="B&amp;Q" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/app.iml" filepath="$PROJECT_DIR$/.idea/app.iml" group="B&amp;Q/app" />
+>>>>>>> Stashed changes
     </modules>
   </component>
 </project>

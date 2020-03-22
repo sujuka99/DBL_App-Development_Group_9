@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< Updated upstream
   <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="delegatedBuild" value="false" />
+=======
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+>>>>>>> Stashed changes
         <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+<<<<<<< Updated upstream
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+=======
+            <option value="$PROJECT_DIR$/.." />
+            <option value="$PROJECT_DIR$" />
+>>>>>>> Stashed changes
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

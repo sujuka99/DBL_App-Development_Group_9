@@ -6,6 +6,14 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+<<<<<<< Updated upstream
+=======
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+>>>>>>> Stashed changes
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -20,16 +28,66 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+<<<<<<< Updated upstream
+=======
+import androidx.recyclerview.widget.LinearLayoutManager;
+>>>>>>> Stashed changes
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.Button;
+<<<<<<< Updated upstream
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+=======
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    private AppBarConfiguration mAppBarConfiguration;
+    FirebaseUser user;
+    public static String major;
+    Button butBCS;
+    Button butBAM;
+    Button butBAP;
+    Button butBBE;
+    Button butBDS;
+    Button butBEE;
+
+
+
+
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //check if the user is still logged in
+        if(user == null){
+            startActivity(new Intent(getApplicationContext(),Login.class));
+            finish();
+        }
+
+        butBCS = findViewById(R.id.buttonBCS);
+        butBAM = findViewById(R.id.buttonBAM);
+        butBAP = findViewById(R.id.buttonBAP);
+        butBBE = findViewById(R.id.buttonBBE);
+        butBDS = findViewById(R.id.buttonBDS);
+        butBEE = findViewById(R.id.buttonBEE);
+
+        butBCS.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onButtonShowPopupWindowClick(v);
+                major = "BCS";
+>>>>>>> Stashed changes
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+<<<<<<< Updated upstream
         Button tempprogram = (Button) findViewById(R.id.tempprogram); //button with id tempprogram
         tempprogram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +160,12 @@ public class MainActivity extends AppCompatActivity {
               adapter.notifyDataSetChanged();
             }
         });
+=======
+
+
+>>>>>>> Stashed changes
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
