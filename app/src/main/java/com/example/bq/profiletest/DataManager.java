@@ -11,11 +11,13 @@ import androidx.annotation.NonNull;
 import com.example.bq.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -153,6 +155,15 @@ public class DataManager {
         });
     }
 
+    public void createUserInDatabase(String id, String fullName){
+        UserData data = new UserData();
+
+        data.id = id;
+        data.fullName = fullName;
+
+        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+        functions.getHttpsCallable("addUser").call(data.toMap());
+    }
     public static DataManager getInstance() {
         return instance == null ? (instance = new DataManager()) : instance;
     }

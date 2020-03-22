@@ -65,6 +65,7 @@ public class Login extends AppCompatActivity {
                     mPassword.setError("Password must contain 6 characters");
                     return;
                 }
+
                 mLoginBtn.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 

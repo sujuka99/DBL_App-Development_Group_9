@@ -64,7 +64,11 @@ public class Register extends AppCompatActivity {
                     return;
                 }
                 if(password.length() < 6){
-                    mPassword.setError("Password must contain 6 characters");
+                    mPassword.setError("Password must contain at least 6 characters");
+                    return;
+                }
+                if(fullName.length() < 6){
+                    mFullName.setError("Full name must contain at least 6 characters");
                     return;
                 }
                 mRegisterBtn.setVisibility(View.INVISIBLE);
