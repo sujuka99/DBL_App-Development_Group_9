@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -85,13 +86,7 @@ public class Register extends AppCompatActivity {
                             assert user != null;
                             String userID = user.getUid();
 
-                            reference = FirebaseDatabase.getInstance().getReference("Users").child(userID);
-
-                            UserData data = new UserData();
-
-                            data.id = userID;
-                            data.fullName = fullName;
-                            reference.setValue(data);
+                            DataManager.getInstance().createUserInDatabase(userID, fullName);
 
                             // Sign in success, display message, redirect to Main activity
                             Toast.makeText(Register.this,"User created", Toast.LENGTH_SHORT).show();

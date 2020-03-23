@@ -44,6 +44,7 @@ public class MyProfileViewModel extends ViewModel implements FirebaseObserver {
         this.id = id;
         DataManager.getInstance().loadProfilePicture(id, this);
         DataManager.getInstance().loadUserData(id, this);
+        DataManager.getInstance().getUserFromDatabase(id, this);
     }
 
     /**

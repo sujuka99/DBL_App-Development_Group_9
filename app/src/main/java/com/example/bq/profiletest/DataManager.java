@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.example.bq.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -18,9 +19,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class DataManager {
 
@@ -162,7 +169,28 @@ public class DataManager {
         data.fullName = fullName;
 
         FirebaseFunctions functions = FirebaseFunctions.getInstance();
-        functions.getHttpsCallable("addUser").call(data.toMap());
+        functions.getHttpsCallable("addUser").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                Object resultData = task.getResult().getData();
+                Log.d("Datatype", resultData.getClass().toString());
+            }
+        });
+    }
+
+    public void getUserFromDatabase(String id, FirebaseObserver observer){
+        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+        functions.getHttpsCallable("getUser").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                // Result data is a HashMap
+                HashMap<String, Object> resultData = (HashMap<String, Object>) task.getResult().getData();
+                Log.d("Result", resultData.toString());
+                if((boolean) resultData.get("success")){
+                    UserData data = new UserData((HashMap<String, String>) resultData.get("result"));
+                }
+            }
+        });
     }
     public static DataManager getInstance() {
         return instance == null ? (instance = new DataManager()) : instance;
