@@ -192,7 +192,12 @@ public class DataManager {
             }
         });
     }
+
+    public boolean isAdmin(String id){
+        return false;
+    }
     public static DataManager getInstance() {
         return instance == null ? (instance = new DataManager()) : instance;
     }
+
 }
