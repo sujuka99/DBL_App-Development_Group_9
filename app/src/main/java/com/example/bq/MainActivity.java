@@ -55,52 +55,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        butBCS = findViewById(R.id.buttonBCS);
-        butBAM = findViewById(R.id.buttonBAM);
-        butBAP = findViewById(R.id.buttonBAP);
-        butBBE = findViewById(R.id.buttonBBE);
-        butBDS = findViewById(R.id.buttonBDS);
-        butBEE = findViewById(R.id.buttonBEE);
-
-        butBCS.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonShowPopupWindowClick(v);
-                major = "BCS";
-
-            }
-        });
-        butBAM.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonShowPopupWindowClick(v);
-                major = "BAM";
-            }
-        });
-        butBAP.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonShowPopupWindowClick(v);
-                major = "BAP";
-            }
-        });
-        butBBE.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonShowPopupWindowClick(v);
-                major = "BBE";
-            }
-        });
-        butBDS.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonShowPopupWindowClick(v);
-                major = "BDS";
-            }
-        });
-        butBEE.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonShowPopupWindowClick(v);
-                major = "BEE";
-            }
-        });
-
-
     }
 
     @Override
