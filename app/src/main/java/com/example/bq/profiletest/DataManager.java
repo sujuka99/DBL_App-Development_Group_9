@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 public class DataManager {
 
-    public static DataManager instance;
+    private static DataManager instance;
 
     private DataManager() {
     }
