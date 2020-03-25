@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.FirebaseObserver;
-import com.example.bq.profiletest.UserData;
+import com.example.bq.datatypes.UserData;
 
 public class MyProfileViewModel extends ViewModel implements FirebaseObserver {
 
@@ -43,7 +43,6 @@ public class MyProfileViewModel extends ViewModel implements FirebaseObserver {
         // Otherwise, we load the profile picture and userdata from the database
         this.id = id;
         DataManager.getInstance().loadProfilePicture(id, this);
-        DataManager.getInstance().loadUserData(id, this);
         DataManager.getInstance().getUserFromDatabase(id, this);
     }
 

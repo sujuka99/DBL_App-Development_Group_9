@@ -4,74 +4,39 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.example.bq.R;
+import com.example.bq.datatypes.BookData;
+import com.example.bq.datatypes.QuestionData;
+import com.example.bq.datatypes.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
+import java.util.List;
 
 public class DataManager {
 
     private static DataManager instance;
 
+    private FirebaseFunctions functions;
+
     private DataManager() {
-    }
-
-    public void loadUserData(final String id, final FirebaseObserver observer) {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(id);
-
-        // We get notified once the data is loaded the first time
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    Log.d("Database:", "DataSnapshot not found!");
-                }
-
-                UserData data = dataSnapshot.getValue(UserData.class);
-
-                observer.notifyOfCallback(data);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("setProfilePicture", "Failed due to an: " +
-                        databaseError.getMessage());
-            }
-        });
-    }
-
-    public void updateUserData(@NonNull String id, @NonNull UserData data) {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(id);
-
-        userRef.setValue(data);
+        functions = FirebaseFunctions.getInstance();
     }
 
     /**
-     * Attempt toownload the profile picture data of the desired user and send it to the observer
+     * Attempt ton download the profile picture data of the desired user and send it to the observer
      *
-     * @param id - ID of the desired user
+     * @param id       - ID of the desired user
      * @param observer - The {@link FirebaseObserver} object that will handle the callback
      */
     public void loadProfilePicture(final String id, final FirebaseObserver observer) {
@@ -162,7 +127,7 @@ public class DataManager {
         });
     }
 
-    public void createUserInDatabase(String id, String fullName){
+    public void createUserInDatabase(String id, String fullName) {
         UserData data = new UserData();
 
         data.id = id;
@@ -173,29 +138,196 @@ public class DataManager {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 Object resultData = task.getResult().getData();
-                Log.d("Datatype", resultData.getClass().toString());
             }
         });
     }
 
-    public void getUserFromDatabase(String id, FirebaseObserver observer){
-        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+    public void getUserFromDatabase(String id, final FirebaseObserver observer) {
         functions.getHttpsCallable("getUser").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                // Result data is a HashMap
-                HashMap<String, Object> resultData = (HashMap<String, Object>) task.getResult().getData();
-                Log.d("Result", resultData.toString());
-                if((boolean) resultData.get("success")){
-                    UserData data = new UserData((HashMap<String, String>) resultData.get("result"));
+                // Result data is a HashMap with success boolean and result a new HashMap<String, Object>
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    UserData data = new UserData((HashMap<String, Object>) response.get("result"));
+                    observer.notifyOfCallback(data);
                 }
             }
         });
     }
 
-    public boolean isAdmin(String id){
+    public boolean isAdmin(String id) {
+        functions.getHttpsCallable("isAdmin").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    boolean result = (boolean) response.get("admin");
+                    //observer.notifyOfCallback(result);
+                }
+            }
+        });
         return false;
     }
+
+    public void isBanned(String id, final FirebaseObserver observer) {
+        functions.getHttpsCallable("isBanned").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    boolean result = (boolean) response.get("admin");
+                    observer.notifyOfCallback(result);
+                }
+            }
+        });
+    }
+
+    public void banUser(String banID, final FirebaseObserver observer) {
+        functions.getHttpsCallable("banUser").call(banID).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    observer.notifyOfCallback(true);
+                } else {
+                    observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
+    public void unbanUser(String banID, final FirebaseObserver observer) {
+        functions.getHttpsCallable("unbanUser").call(banID).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    observer.notifyOfCallback(true);
+                } else {
+                    observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
+    public void viewBannedUsers(int page, final FirebaseObserver observer) {
+        functions.getHttpsCallable("viewBannedUsers").call(page).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    Log.d("ViewBannedUsers result", response.get("result").getClass().toString());
+                    List<Object> result = (List<Object>) response.get("result");
+                    Log.d("ViewBannedUsers listResult", result.toString());
+                }
+            }
+        });
+    }
+
+    public void getBooks(String study, String ordering, int page, String query, final FirebaseObserver observer) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("study", study);
+        data.put("order", ordering);
+        data.put("page", page);
+        data.put("query", query);
+
+        functions.getHttpsCallable("getBooks").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    Log.d("Get books result", response.get("result").getClass().toString());
+                    List<Object> result = (List<Object>) response.get("result");
+                    Log.d("Get books listResult", result.toString());
+                }
+            }
+        });
+    }
+
+    public void addBook(BookData data, final FirebaseObserver observer) {
+        functions.getHttpsCallable("addBook").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    observer.notifyOfCallback(true);
+                } else {
+                    observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
+    public void deleteBook(String study, String id, final FirebaseObserver observer) {
+        HashMap<String, String> data = new HashMap<>();
+
+        data.put("study", study);
+        data.put("id", id);
+
+        functions.getHttpsCallable("deleteBook").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    observer.notifyOfCallback(true);
+                } else {
+                    observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
+    public void getQuestions(String study, int page, String query, final FirebaseObserver observer) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("study", study);
+        data.put("page", page);
+        data.put("query", query);
+        functions.getHttpsCallable("getQuestions").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    Log.d("Get questions result", response.get("result").getClass().toString());
+                    List<Object> result = (List<Object>) response.get("result");
+                    Log.d("Get questions listResult", result.toString());
+                }
+            }
+        });
+    }
+
+    public void addQuestion(QuestionData data, final FirebaseObserver observer) {
+        functions.getHttpsCallable("addQuestion").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    observer.notifyOfCallback(true);
+                } else {
+                    observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
+    public void deleteQuestion(String study, String id, final FirebaseObserver observer) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("study", study);
+        data.put("id", id);
+
+        functions.getHttpsCallable("deleteQuestion").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                if ((boolean) response.get("success")) {
+                    observer.notifyOfCallback(true);
+                } else {
+                    observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
     public static DataManager getInstance() {
         return instance == null ? (instance = new DataManager()) : instance;
     }
