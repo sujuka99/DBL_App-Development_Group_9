@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
 import com.example.bq.profiletest.ProfileFragment;
-import com.example.bq.profiletest.UserData;
+import com.example.bq.datatypes.UserData;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MyProfileFragment extends Fragment {
