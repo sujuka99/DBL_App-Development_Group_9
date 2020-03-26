@@ -20,6 +20,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -149,7 +150,13 @@ public class DataManager {
                 // Result data is a HashMap with success boolean and result a new HashMap<String, Object>
                 HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
                 if ((boolean) response.get("success")) {
-                    UserData data = new UserData((HashMap<String, Object>) response.get("result"));
+                    HashMap<String, Object> result = (HashMap<String, Object>) response.get("result");
+                    UserData data;
+                    if(result == null){
+                        data = new UserData();
+                    }else{
+                        data = new UserData(result);
+                    }
                     observer.notifyOfCallback(data);
                 }
             }
@@ -235,11 +242,16 @@ public class DataManager {
         functions.getHttpsCallable("getBooks").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    Log.d("Get books result", response.get("result").getClass().toString());
-                    List<Object> result = (List<Object>) response.get("result");
-                    Log.d("Get books listResult", result.toString());
+                if (task.getResult().getData() != null) {
+                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                    if ((boolean) response.get("success")) {
+                        List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
+                        List<BookData> callBack = new ArrayList<BookData>();
+                        for(HashMap<String, String> book : result){
+                            callBack.add(new BookData(book));
+                        }
+                        observer.notifyOfCallback(callBack);
+                    }
                 }
             }
         });

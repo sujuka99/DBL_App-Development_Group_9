@@ -1,5 +1,6 @@
 package com.example.bq.ui.myProfile;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -92,10 +93,10 @@ public class MyProfileFragment extends Fragment {
             }
         };
 
-        final Observer<Uri> profilePictureObserver = new Observer<Uri>() {
+        final Observer<Bitmap> profilePictureObserver = new Observer<Bitmap>() {
             @Override
-            public void onChanged(final Uri uri) {
-                profilePicture.setImageURI(uri);
+            public void onChanged(final Bitmap bmp) {
+                profilePicture.setImageBitmap(bmp);
             }
         };
 
