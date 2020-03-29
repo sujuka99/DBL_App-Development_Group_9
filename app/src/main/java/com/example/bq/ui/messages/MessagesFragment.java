@@ -186,7 +186,7 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewH
                 user = FirebaseAuth.getInstance().getCurrentUser();
                 //TODO
                 // "Enter the actual id here "
-                intent.putExtra("userid", "hMrqFX1Q7JOBDR1pOltEUGqHugC3");
+                intent.putExtra("userid", "IkkbRbWPeuNr8Qt1r1HaeVn2gXv2");
                 messageContext.startActivity(intent);
             }
         });
