@@ -1,6 +1,7 @@
 package com.example.bq.ui.messages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.bq.MessageActivity;
 import com.example.bq.R;
+import com.example.bq.datatypes.UserData;
+import com.example.bq.profiletest.DataManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +128,7 @@ public class MessagesFragment extends Fragment {
 
 class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewHolder> {
 
+
     //private static final String TAG = "MessagesAdapter";
 
     List<String> profilePictures;
@@ -152,6 +159,7 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewH
 
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.MessagesViewHolder holder, final int position) {
+
         //Log.d(TAG, "setting item " + position);
 
         Glide.with(messageContext)
@@ -167,6 +175,19 @@ class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewH
             @Override
             public void onClick(View v) {
                 Toast.makeText(messageContext, fullNames.get(position), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(messageContext, MessageActivity.class);
+                FirebaseUser user;
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                //TODO
+                // "Enter the actual id here "
+                intent.putExtra("userid", "hMrqFX1Q7JOBDR1pOltEUGqHugC3");
+                messageContext.startActivity(intent);
             }
         });
     }
