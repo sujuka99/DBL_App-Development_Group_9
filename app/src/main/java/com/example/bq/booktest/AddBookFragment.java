@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.bq.MainActivity;
 import com.example.bq.R;
 import com.example.bq.datatypes.BookData;
 import com.example.bq.profiletest.FirebaseObserver;
@@ -175,7 +177,8 @@ public class AddBookFragment extends Fragment implements FirebaseObserver {
         data.price = bookPrice.getText().toString();
         data.seller = (FirebaseAuth.getInstance().getCurrentUser().getDisplayName() + "-" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         data.id = UUID.randomUUID().toString().replaceAll("-", "");
-        data.location = "location1";
+        Location loc = MainActivity.userLocation;
+        data.location = loc.getLatitude() + ":" + loc.getLongitude();
 
         viewModel.addBook(data, this);
     }

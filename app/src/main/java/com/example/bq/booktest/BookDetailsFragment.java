@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.example.bq.MainActivity;
 import com.example.bq.R;
 import com.example.bq.datatypes.BookData;
-import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.FirebaseObserver;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,10 +89,9 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
 
         if (bookData.seller.split("-")[1].trim().equalsIgnoreCase(FirebaseAuth.getInstance().getCurrentUser().getUid().trim())) {
             initDeleteButton(false);
-            return;
+        } else if (MainActivity.isAdmin) {
+            initDeleteButton(true);
         }
-
-        DataManager.getInstance().isAdmin(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
     }
 
     private void initDeleteButton(boolean admin) {

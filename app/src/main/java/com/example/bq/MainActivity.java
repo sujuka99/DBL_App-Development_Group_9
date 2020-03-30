@@ -20,9 +20,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -38,17 +38,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -56,16 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     FirebaseUser user;
-    public static String major;
+
+    public static boolean isAdmin;
+
     LocationManager locationManager;
     LocationListener locationListener;
+
     public static Location userLocation;
-    Button butBCS;
-    Button butBAM;
-    Button butBAP;
-    Button butBBE;
-    Button butBDS;
-    Button butBEE;
 
     public static String major;
 
@@ -154,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 if (obj instanceof HashMap) {
                     HashMap<String, Object> result = (HashMap<String, Object>) obj;
                     if (result.get("action") == "isAdmin") {
-                        if ((boolean) result.get("admin")) {
+                        if ((boolean) result.get("result")) {
+                            isAdmin = true;
                             menu.findItem(R.id.action_admin).setVisible(true);
                         }
                     }

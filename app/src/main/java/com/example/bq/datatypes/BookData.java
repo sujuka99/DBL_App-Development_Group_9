@@ -13,6 +13,7 @@ public class BookData {
     public String seller;
     public String id;
     public String study;
+    public String timeStamp;
 
     public BookData(HashMap<String, String> data) {
         this.title = data.containsKey("title") ?  data.get("title") : null;
@@ -23,6 +24,7 @@ public class BookData {
         this.description = data.containsKey("description") ?  data.get("description") : null;
         this.price = data.containsKey("price") ?  data.get("price") : null;
         this.seller = data.containsKey("seller") ?  data.get("seller") : null;
+        this.timeStamp = data.containsKey("timeStamp") ? data.get("timeStamp") : null;
     }
 
     public BookData() {

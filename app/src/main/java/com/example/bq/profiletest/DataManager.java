@@ -173,6 +173,8 @@ public class DataManager {
                     result.put("action", "isAdmin");
                     result.put("result", response.get("admin"));
                     observer.notifyOfCallback(result);
+                } else {
+                    Log.d("isAdmin", response.get("error") + "");
                 }
             }
         });

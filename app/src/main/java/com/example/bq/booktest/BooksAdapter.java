@@ -1,6 +1,7 @@
 package com.example.bq.booktest;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.bq.MainActivity;
 import com.example.bq.R;
 import com.example.bq.datatypes.BookData;
 
@@ -49,7 +51,12 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
         holder.bookPrice.setText(data.price);
         holder.bookSeller.setText(data.seller.split("-")[0]);
         holder.bookTimestamp.setText("No Time");
-        holder.bookDistance.setText(data.location);
+        String[] longLat = data.location.split(":");
+        Location location = new Location("");
+        location.setLatitude(Float.parseFloat(longLat[0].trim()));
+        location.setLongitude(Float.parseFloat(longLat[1].trim()));
+
+        holder.bookDistance.setText("" + Math.round(MainActivity.userLocation.distanceTo(location)) + "m");
 
         holder.bookLayout.setOnClickListener(new View.OnClickListener() {
             @Override
