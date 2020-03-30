@@ -7,13 +7,97 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:id="@+id/bookImage"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/imageSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:text="Select  Image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookImage" />
+
+    <EditText
+        android:id="@+id/bookTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="Title"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageSelect" />
+
+    <EditText
+        android:id="@+id/bookAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Author"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/bookTitle"
+        app:layout_constraintStart_toStartOf="@+id/bookTitle"
+        app:layout_constraintTop_toBottomOf="@+id/bookTitle" />
+
+    <EditText
+        android:id="@+id/bookDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:maxLength="120"
+        android:maxLines="3"
+        android:minLines="1"
+        app:layout_constraintEnd_toEndOf="@+id/bookAuthor"
+        app:layout_constraintStart_toStartOf="@+id/bookAuthor"
+        app:layout_constraintTop_toBottomOf="@+id/bookAuthor" />
+
+    <EditText
+        android:id="@+id/bookPrice"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="Price"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/bookDescription"
+        app:layout_constraintStart_toStartOf="@+id/bookDescription"
+        app:layout_constraintTop_toBottomOf="@+id/bookDescription" />
+
+    <Button
+        android:id="@+id/registerBook"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:text="Register Book"
+        app:layout_constraintEnd_toEndOf="@+id/bookPrice"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/bookPrice"
+        app:layout_constraintTop_toBottomOf="@+id/bookPrice" />
+
+    <TextView
+        android:id="@+id/euroSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="€"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bookPrice"
+        app:layout_constraintEnd_toStartOf="@+id/bookPrice"
+        app:layout_constraintTop_toTopOf="@+id/bookPrice"
+        app:layout_constraintVertical_bias="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>

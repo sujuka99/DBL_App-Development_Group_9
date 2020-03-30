@@ -1,16 +1,7 @@
 package com.example.bq;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +10,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.example.bq.booktest.BookDetailsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Books extends AppCompatActivity {
 
-    TextView pageTitle;
     Button createListingBtn;
 
     //data
@@ -46,12 +44,9 @@ public class Books extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycle_books);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        BooksAdapter adapter = new BooksAdapter(bookImages, bookTitles, bookPrices, bookSellers, bookTimestamps, bookDistances,this);
+        BooksAdapter adapter = new BooksAdapter(bookImages, bookTitles, bookPrices, bookSellers, bookTimestamps, bookDistances, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        pageTitle = findViewById(R.id.book_page);
-        pageTitle.setText(MainActivity.major + " Books");
 
         createListingBtn = findViewById(R.id.button_create_listing);
         createListingBtn.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +179,9 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHolder> {
         holder.bookLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Books books = (Books) v.getContext();
+                BookDetailsFragment fragment = new BookDetailsFragment();
+                //books.getSupportFragmentManager().beginTransaction().replace(R.id.layout, fragment).commit();
                 Toast.makeText(bContext, bookTitles.get(position), Toast.LENGTH_SHORT).show();
             }
         });

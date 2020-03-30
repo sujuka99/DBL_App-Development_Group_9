@@ -152,9 +152,9 @@ public class DataManager {
                 if ((boolean) response.get("success")) {
                     HashMap<String, Object> result = (HashMap<String, Object>) response.get("result");
                     UserData data;
-                    if(result == null){
+                    if (result == null) {
                         data = new UserData();
-                    }else{
+                    } else {
                         data = new UserData(result);
                     }
                     observer.notifyOfCallback(data);
@@ -163,18 +163,19 @@ public class DataManager {
         });
     }
 
-    public boolean isAdmin(String id) {
+    public void isAdmin(String id, final FirebaseObserver observer) {
         functions.getHttpsCallable("isAdmin").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
                 if ((boolean) response.get("success")) {
-                    boolean result = (boolean) response.get("admin");
-                    //observer.notifyOfCallback(result);
+                    HashMap<String, Object> result = new HashMap<>();
+                    result.put("action", "isAdmin");
+                    result.put("result", response.get("admin"));
+                    observer.notifyOfCallback(result);
                 }
             }
         });
-        return false;
     }
 
     public void isBanned(String id, final FirebaseObserver observer) {
@@ -246,8 +247,8 @@ public class DataManager {
                     HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
                     if ((boolean) response.get("success")) {
                         List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
-                        List<BookData> callBack = new ArrayList<BookData>();
-                        for(HashMap<String, String> book : result){
+                        List<BookData> callBack = new ArrayList<>();
+                        for (HashMap<String, String> book : result) {
                             callBack.add(new BookData(book));
                         }
                         observer.notifyOfCallback(callBack);

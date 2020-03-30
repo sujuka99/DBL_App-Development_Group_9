@@ -1,0 +1,81 @@
+package com.example.bq.booktest;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.example.bq.datatypes.BookData;
+import com.example.bq.profiletest.DataManager;
+import com.example.bq.profiletest.FirebaseObserver;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class BookViewModel extends ViewModel {
+
+    private MutableLiveData<List<BookData>> books;
+
+    private MutableLiveData<String> bookTitle;
+    private MutableLiveData<String> bookAuthor;
+    private MutableLiveData<String> bookDescription;
+    private MutableLiveData<String> bookPrice;
+
+    public BookViewModel() {
+        books = new MutableLiveData<>();
+        books.setValue(new ArrayList<BookData>());
+
+        bookTitle = new MutableLiveData<>();
+        bookAuthor = new MutableLiveData<>();
+        bookDescription = new MutableLiveData<>();
+        bookPrice = new MutableLiveData<>();
+    }
+
+    public void loadBooksIntoViewModel(String study) {
+        if (study == null) {
+            return;
+        }
+
+        DataManager.getInstance().getBooks(study, "", 0, "", new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                if (obj instanceof ArrayList) {
+                    ArrayList<BookData> data = (ArrayList<BookData>) obj;
+                    books.setValue(data);
+                }
+            }
+        });
+    }
+
+    public LiveData<List<BookData>> getBooks() {
+        return books;
+    }
+
+    public void addBook(final BookData data, final FirebaseObserver observer) {
+        final List<BookData> bookList = books.getValue();
+        DataManager.getInstance().addBook(data, new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                if ((boolean) obj) {
+                    bookList.add(data);
+                    books.setValue(bookList);
+                }
+                observer.notifyOfCallback(obj);
+            }
+        });
+    }
+
+    public void removeBook(BookData data, final FirebaseObserver observer) {
+        final List<BookData> bookList = books.getValue();
+        final int position = bookList.indexOf(data);
+        DataManager.getInstance().deleteBook(data.study, data.id, new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                HashMap<String, Object> result = new HashMap<>();
+                result.put("action", "removeBook");
+                result.put("result", obj);
+                observer.notifyOfCallback(result);
+            }
+        });
+    }
+}

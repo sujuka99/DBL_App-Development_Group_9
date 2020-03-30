@@ -40,4 +40,5 @@
     <string name="home_button_BEE">BEE</string>
     <string name="popup_books_button">Books</string>
     <string name="popup_questions_button">Questions</string>
+    <string name="admin">Admin</string>
 </resources>

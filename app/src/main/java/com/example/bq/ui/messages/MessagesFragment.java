@@ -2,7 +2,6 @@ package com.example.bq.ui.messages;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -117,6 +115,8 @@ public class MessagesFragment extends Fragment {
         fullNames.add("Anonymous");
         lastMessages.add("No messages");
         messageTimes.add("");
+
+        profilePictures.add("https://cdn.guidingtech.com/media/assets/2019/10/_1200x630_crop_center-center_82_none/Launch-Chrome-Incognito-Mode-Featured.png?mtime=1570415817");
     }
 }
 

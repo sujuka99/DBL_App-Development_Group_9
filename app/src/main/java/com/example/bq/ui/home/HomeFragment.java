@@ -1,96 +1,116 @@
 package com.example.bq.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.example.bq.MainActivity;
+import com.example.bq.Questions;
 import com.example.bq.R;
+import com.example.bq.booktest.AddBookFragment;
+import com.example.bq.booktest.BookDetailsFragment;
+import com.example.bq.booktest.BookFragment;
+import com.example.bq.datatypes.BookData;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class HomeFragment extends Fragment {
 
-    public static String major;
-    Button butBCS;
-    Button butBAM;
-    Button butBAP;
-    Button butBBE;
-    Button butBDS;
-    Button butBEE;
+    public String major;
 
-
-    private HomeViewModel homeViewModel;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        initButtons(root);
+
+        loadChildFragment();
         return root;
     }
-    public void initButtons(View view){
 
-        butBCS = view.findViewById(R.id.buttonBCS);
-        butBAM = view.findViewById(R.id.buttonBAM);
-        butBAP = view.findViewById(R.id.buttonBAP);
-        butBBE = view.findViewById(R.id.buttonBBE);
-        butBDS = view.findViewById(R.id.buttonBDS);
-        butBEE = view.findViewById(R.id.buttonBEE);
+    // Used to make sure that on rotate the right child fragment is maintained
+    public void loadChildFragment() {
+        if (getChildFragmentManager().getFragments().size() > 0) {
+            return;
+        }
+        Fragment homeStudies = new HomeStudies();
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, homeStudies).commit();
+    }
 
-        final MainActivity main  = (MainActivity) getActivity();
-        butBCS.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                main.onButtonShowPopupWindowClick(v);
-                main.major = "BCS";
+    public void onButtonShowPopupWindowClick(View view) {
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_window, null);
 
-            }
-        });
-        butBAM.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                main.onButtonShowPopupWindowClick(v);
-                main.major = "BAM";
-            }
-        });
-        butBAP.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                main.onButtonShowPopupWindowClick(v);
-                main.major = "BAP";
-            }
-        });
-        butBBE.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                main.onButtonShowPopupWindowClick(v);
-                main.major = "BBE";
-            }
-        });
-        butBDS.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                main.onButtonShowPopupWindowClick(v);
-                main.major = "BDS";
-            }
-        });
-        butBEE.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                main.onButtonShowPopupWindowClick(v);
-                main.major = "BEE";
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
             }
         });
 
+        popupView.findViewById(R.id.popupBook).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                onBookClick(v);
+            }
+        });
+
+        popupView.findViewById(R.id.popupQuestion).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                onQuestionsClick(v);
+            }
+        });
+    }
+
+    public void loadBooks(boolean addToBackStack) {
+        BookFragment fragment = new BookFragment();
+        if (addToBackStack) {
+            getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
+            return;
+        }
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).commit();
+    }
+
+    public void onBookClick(View v) {
+        loadBooks(true);
+    }
+
+    public void onQuestionsClick(View v) {
+        startActivity(new Intent(getActivity().getApplicationContext(), Questions.class));
+    }
+
+    public void addBook() {
+        AddBookFragment fragment = new AddBookFragment();
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
+    }
+
+    public void loadBookDetails(BookData data) {
+        BookDetailsFragment fragment = BookDetailsFragment.newInstance(data);
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
 }

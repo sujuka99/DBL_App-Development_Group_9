@@ -2,59 +2,62 @@ package com.example.bq;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.bq.profiletest.DataManager;
+import com.example.bq.profiletest.FirebaseObserver;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     FirebaseUser user;
-    public static String major;
-    Button butBCS;
-    Button butBAM;
-    Button butBAP;
-    Button butBBE;
-    Button butBDS;
-    Button butBEE;
 
+    public static String major;
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         //check if the user is still logged in
-        if(user == null){
-            startActivity(new Intent(getApplicationContext(),Login.class));
+        if (user == null) {
+            startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
+        } else {
+            user.reload().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "You have been signed out as your account got banned!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+            });
         }
-
     }
 
     @Override
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        //fab.hide() uncomment to hide floating button
+        fab.hide();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,9 +90,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        DataManager.getInstance().isAdmin(user.getUid(), new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                if (obj instanceof HashMap) {
+                    HashMap<String, Object> result = (HashMap<String, Object>) obj;
+                    if (result.get("action") == "isAdmin") {
+                        if ((boolean) result.get("admin")) {
+                            menu.findItem(R.id.action_admin).setVisible(true);
+                        }
+                    }
+                }
+            }
+        });
         return true;
     }
 
@@ -104,9 +121,8 @@ public class MainActivity extends AppCompatActivity {
     // I still dont know how to link it to the actual logout button
     // so I used the settings button since it does nothing jet
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_logout:
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getApplicationContext(), Login.class));
@@ -149,11 +165,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBookClick(View v) {
-        startActivity(new Intent(getApplicationContext(),Books.class));
+        startActivity(new Intent(getApplicationContext(), Books.class));
 
     }
+
     public void onQuestionsClick(View v) {
-        startActivity(new Intent(getApplicationContext(),Questions.class));
+        startActivity(new Intent(getApplicationContext(), Questions.class));
 
     }
 
