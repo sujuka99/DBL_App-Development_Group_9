@@ -59,8 +59,7 @@ public class BookFragment extends Fragment {
         createListingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeFragment fragment = (HomeFragment) getParentFragment();
-                fragment.addBook();
+                parent.addBook();
             }
         });
 
