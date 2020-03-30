@@ -36,7 +36,7 @@ public class QuestionFragment extends Fragment {
 
     private List<QuestionData> questionData = new ArrayList<>();
 
-    private QuestionAdapter questionAdapter;
+    private ResponseAdapter responseAdapter;
 
     @Nullable
     @Override
@@ -81,7 +81,7 @@ public class QuestionFragment extends Fragment {
         recyclerView.setHasFixedSize(true); //----> Different from books
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         layoutManager = new LinearLayoutManager(getContext()); // ----> Different from books
-        adapter = new QuestionAdapter(questionData, this);
+        adapter = new ResponseAdapter(questionData, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
     }
