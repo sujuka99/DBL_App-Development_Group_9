@@ -1,6 +1,7 @@
 package com.example.bq;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,75 +66,87 @@ public class Books extends AppCompatActivity {
         bookTimestamps = new ArrayList<>();
         bookDistances = new ArrayList<>();
 
+        Location bookLocation = new Location("");
+
         bookImages.add("https://i.redd.it/khdhw14ui7o41.jpg");
         bookTitles.add("Mandarian Ducks for Dummies");
         bookPrices.add("$100.000");
         bookSellers.add("BirdWatcher34");
         bookTimestamps.add("37m ago");
-        bookDistances.add("700m away");
+        bookLocation.setLatitude(-40d);
+        bookLocation.setLongitude(-90d);
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/en/6/62/ArtOfComputerProgramming.jpg");
         bookTitles.add("The Art of Computer Programming");
         bookPrices.add("$60");
         bookSellers.add("CoderBoy74");
         bookTimestamps.add("1h ago");
-        bookDistances.add("2km away");
+        bookLocation.setLatitude(-30d);
+        bookLocation.setLongitude(120d);
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://images-na.ssl-images-amazon.com/images/I/51sRrwGcg3L._SX350_BO1,204,203,200_.jpg");
         bookTitles.add("Concrete Mathematics");
         bookPrices.add("$100");
         bookSellers.add("CoderBoy74");
         bookTimestamps.add("1h ago");
-        bookDistances.add("2km away");
+        bookLocation.setLatitude(10d);
+        bookLocation.setLongitude(50d);
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Clrs3.jpeg/220px-Clrs3.jpeg");
         bookTitles.add("Introduction to Algorithms");
         bookPrices.add("$40");
         bookSellers.add("ComputerMan22");
         bookTimestamps.add("4h ago");
-        bookDistances.add("3km away");
+        bookLocation.setLatitude(-10d);
+        bookLocation.setLongitude(60d);
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png");
         bookTitles.add("<book title>");
         bookPrices.add("<price>");
         bookSellers.add("<seller>");
         bookTimestamps.add("<time>");
-        bookDistances.add("<distance>");
+        bookLocation.setLatitude(0d);
+        bookLocation.setLongitude(0d);
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png");
         bookTitles.add("<book title>");
         bookPrices.add("<price>");
         bookSellers.add("<seller>");
         bookTimestamps.add("<time>");
-        bookDistances.add("<distance>");
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png");
         bookTitles.add("<book title>");
         bookPrices.add("<price>");
         bookSellers.add("<seller>");
         bookTimestamps.add("<time>");
-        bookDistances.add("<distance>");
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png");
         bookTitles.add("<book title>");
         bookPrices.add("<price>");
         bookSellers.add("<seller>");
         bookTimestamps.add("<time>");
-        bookDistances.add("<distance>");
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png");
         bookTitles.add("<book title>");
         bookPrices.add("<price>");
         bookSellers.add("<seller>");
         bookTimestamps.add("<time>");
-        bookDistances.add("<distance>");
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
 
         bookImages.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png");
         bookTitles.add("<book title>");
         bookPrices.add("<price>");
         bookSellers.add("<seller>");
         bookTimestamps.add("<time>");
-        bookDistances.add("<distance>");
+        bookDistances.add(bookLocation.distanceTo(MainActivity.userLocation) + "m away");
     }
 }
 

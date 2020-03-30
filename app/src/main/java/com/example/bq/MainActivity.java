@@ -1,6 +1,11 @@
 package com.example.bq;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,11 +38,34 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.Menu;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     FirebaseUser user;
+    public static String major;
+    LocationManager locationManager;
+    LocationListener locationListener;
+    public static Location userLocation;
+    Button butBCS;
+    Button butBAM;
+    Button butBAP;
+    Button butBBE;
+    Button butBDS;
+    Button butBEE;
 
     public static String major;
 
@@ -87,6 +117,30 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        CheckPermission();
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                userLocation = location;
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(MainActivity.this, "Please Enable GPS and Internet", LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
@@ -151,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
         // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
+        // which view you pass in doesn't matter, it is only used for the window token
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
         // dismiss the popup window when touched
@@ -174,5 +228,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLocation();
+    }
 
+    /* Remove the locationlistener updates when Activity is paused */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(locationListener); //or MainActivity.this
+    }
+
+    public void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void CheckPermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+        }
+    }
 }
