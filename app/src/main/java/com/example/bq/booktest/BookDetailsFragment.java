@@ -1,5 +1,6 @@
 package com.example.bq.booktest;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,8 +85,12 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
             }
         });
 
-        // Edit to actually give a right distance!
-        distance.setText(bookData.location == null ? "No location" : bookData.location);
+        String[] longLat = bookData.location.split(":");
+        Location location = new Location("");
+        location.setLatitude(Float.parseFloat(longLat[0].trim()));
+        location.setLongitude(Float.parseFloat(longLat[1].trim()));
+
+        distance.setText("" + Math.round(MainActivity.userLocation.distanceTo(location)) + "m");
 
         if (bookData.seller.split("-")[1].trim().equalsIgnoreCase(FirebaseAuth.getInstance().getCurrentUser().getUid().trim())) {
             initDeleteButton(false);

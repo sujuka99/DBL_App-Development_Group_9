@@ -298,14 +298,20 @@ public class DataManager {
         data.put("study", study);
         data.put("page", page);
         data.put("query", query);
+
         functions.getHttpsCallable("getQuestions").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    Log.d("Get questions result", response.get("result").getClass().toString());
-                    List<Object> result = (List<Object>) response.get("result");
-                    Log.d("Get questions listResult", result.toString());
+                if (task.getResult().getData() != null) {
+                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                    if ((boolean) response.get("success")) {
+                        List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
+                        List<QuestionData> callBack = new ArrayList<>();
+                        for (HashMap<String, String> question : result) {
+                            callBack.add(new QuestionData(question));
+                        }
+                        observer.notifyOfCallback(callBack);
+                    }
                 }
             }
         });

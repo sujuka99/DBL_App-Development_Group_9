@@ -20,6 +20,8 @@ import com.example.bq.booktest.AddBookFragment;
 import com.example.bq.booktest.BookDetailsFragment;
 import com.example.bq.booktest.BookFragment;
 import com.example.bq.datatypes.BookData;
+import com.example.bq.datatypes.QuestionData;
+import com.example.bq.questiontest.QuestionFragment;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -96,12 +98,21 @@ public class HomeFragment extends Fragment {
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).commit();
     }
 
+    public void loadQuestions(boolean addToBackStack) {
+        QuestionFragment fragment = new QuestionFragment();
+        if (addToBackStack) {
+            getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
+            return;
+        }
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).commit();
+    }
+
     public void onBookClick(View v) {
         loadBooks(true);
     }
 
     public void onQuestionsClick(View v) {
-        startActivity(new Intent(getActivity().getApplicationContext(), Questions.class));
+        loadQuestions(true);
     }
 
     public void addBook() {
@@ -109,8 +120,17 @@ public class HomeFragment extends Fragment {
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
 
+    public void addQuestion(){
+
+    }
+
     public void loadBookDetails(BookData data) {
         BookDetailsFragment fragment = BookDetailsFragment.newInstance(data);
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
+    }
+
+    public void loadQuestionDetails(QuestionData data) {
+        //BookDetailsFragment fragment = BookDetailsFragment.newInstance(data);
+        //getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
 }
