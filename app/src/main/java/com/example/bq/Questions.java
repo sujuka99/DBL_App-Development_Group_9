@@ -36,9 +36,6 @@ public class Questions extends AppCompatActivity {
         
         createDataset();
 
-        pageTitle = findViewById(R.id.question_page);
-        pageTitle.setText(MainActivity.major + " Questions");
-
         recyclerView = findViewById(R.id.recycle_questions);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));

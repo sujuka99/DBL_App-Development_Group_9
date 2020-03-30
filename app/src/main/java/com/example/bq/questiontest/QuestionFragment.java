@@ -55,8 +55,7 @@ public class QuestionFragment extends Fragment {
         createQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // CHANGE TO ADD QUESTION
-                parent.addBook();
+                parent.addQuestion();
             }
         });
         return root;
@@ -82,7 +81,7 @@ public class QuestionFragment extends Fragment {
         recyclerView.setHasFixedSize(true); //----> Different from books
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         layoutManager = new LinearLayoutManager(getContext()); // ----> Different from books
-        adapter = new QuestionAdapter(questionData, this, getActivity());
+        adapter = new QuestionAdapter(questionData, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
     }

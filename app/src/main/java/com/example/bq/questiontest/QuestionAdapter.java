@@ -40,7 +40,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
         }
     }
 
-    public QuestionAdapter(List<QuestionData> data, QuestionFragment fragment, Context qContext) {
+    public QuestionAdapter(List<QuestionData> data, QuestionFragment fragment) {
         this.questionData = data;
         this.fragment = fragment;
     }
