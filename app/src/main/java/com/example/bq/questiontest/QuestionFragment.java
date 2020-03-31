@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,18 +24,12 @@ import java.util.List;
 
 public class QuestionFragment extends Fragment {
 
-    TextView pageTitle;
-    Button createQuestionBtn;
-    RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    private QuestionAdapter adapter;
 
     private QuestionViewModel viewModel;
     private HomeFragment parent;
 
     private List<QuestionData> questionData = new ArrayList<>();
-
-    private ResponseAdapter responseAdapter;
 
     @Nullable
     @Override
@@ -51,7 +44,7 @@ public class QuestionFragment extends Fragment {
 
         initRecycleView(root);
 
-        createQuestionBtn = root.findViewById(R.id.button_create_question);
+        Button createQuestionBtn = root.findViewById(R.id.button_create_question);
         createQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,11 +70,11 @@ public class QuestionFragment extends Fragment {
     }
 
     public void initRecycleView(View root) {
-        recyclerView = root.findViewById(R.id.recycle_questions);
+        RecyclerView recyclerView = root.findViewById(R.id.recycle_questions);
         recyclerView.setHasFixedSize(true); //----> Different from books
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        layoutManager = new LinearLayoutManager(getContext()); // ----> Different from books
-        adapter = new ResponseAdapter(questionData, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext()); // ----> Different from books
+        adapter = new QuestionAdapter(questionData, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
     }

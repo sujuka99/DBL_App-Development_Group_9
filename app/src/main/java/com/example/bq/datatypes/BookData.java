@@ -56,6 +56,9 @@ public class BookData {
         if (seller != null) {
             result.put("seller", seller);
         }
+        if(timeStamp != null){
+            result.put("timeStamp", timeStamp);
+        }
         return result;
     }
 }

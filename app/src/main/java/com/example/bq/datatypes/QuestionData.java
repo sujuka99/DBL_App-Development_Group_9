@@ -8,6 +8,7 @@ public class QuestionData {
     public String author;
     public String id;
     public String study;
+    public String timeStamp;
 
     public QuestionData(){};
 
@@ -17,6 +18,7 @@ public class QuestionData {
         this.study = data.containsKey("study") ?  data.get("study") : null;
         this.id = data.containsKey("id") ?  data.get("id") : null;
         this.description = data.containsKey("description") ?  data.get("description") : null;
+        this.timeStamp = data.containsKey("timeStamp") ? data.get("timeStamp") : null;
     }
 
     public HashMap<String, String> toMap() {
@@ -35,6 +37,9 @@ public class QuestionData {
         }
         if (description != null) {
             result.put("description", description);
+        }
+        if(timeStamp != null){
+            result.put("timeStamp", timeStamp);
         }
         return result;
     }

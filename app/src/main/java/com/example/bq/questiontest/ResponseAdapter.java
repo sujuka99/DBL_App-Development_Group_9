@@ -1,5 +1,6 @@
 package com.example.bq.questiontest;
 
+import android.app.TaskInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +12,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
+import com.example.bq.booktest.TimeStamp;
 import com.example.bq.datatypes.QuestionResponseData;
 
 import java.util.List;
 
 public class ResponseAdapter extends RecyclerView.Adapter<ResponseAdapter.ResponseViewHolder> {
-
-    private static final String TAG = "ResponseAdapter";
-
     private List<QuestionResponseData> questionResponseData;
-    private QuestionFragment fragment;
 
     public static class ResponseViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -39,9 +37,8 @@ public class ResponseAdapter extends RecyclerView.Adapter<ResponseAdapter.Respon
         }
     }
 
-    public ResponseAdapter(List<QuestionResponseData> data, QuestionFragment fragment) {
+    public ResponseAdapter(List<QuestionResponseData> data) {
         this.questionResponseData = data;
-        this.fragment = fragment;
     }
 
     @NonNull
@@ -59,16 +56,8 @@ public class ResponseAdapter extends RecyclerView.Adapter<ResponseAdapter.Respon
 
         QuestionResponseData data = questionResponseData.get(position);
         holder.responseBody.setText(data.body);
-        holder.responseAuthor.setText("Answered by " + data.author.split("-")[0].trim());
-        holder.responseTimestamp.setText("No Time"); //----> Fix time stamps
-
-        holder.questionLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragment.loadQuestionDetails(position);
-                Toast.makeText(v.getContext(), "Load response details", Toast.LENGTH_SHORT).show();
-            }
-        });
+        holder.responseAuthor.setText("By " + (data.author == null ? "" : data.author.split("-")[0].trim()));
+        holder.responseTimestamp.setText(TimeStamp.toTime(data.timeStamp));
     }
 
     @Override

@@ -30,6 +30,7 @@ import com.example.bq.profiletest.FirebaseObserver;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -179,6 +180,7 @@ public class AddBookFragment extends Fragment implements FirebaseObserver {
         data.id = UUID.randomUUID().toString().replaceAll("-", "");
         Location loc = MainActivity.userLocation;
         data.location = loc.getLatitude() + ":" + loc.getLongitude();
+        data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
 
         viewModel.addBook(data, this);
     }

@@ -20,6 +20,7 @@ import com.example.bq.profiletest.FirebaseObserver;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 public class AddQuestionFragment extends Fragment implements FirebaseObserver {
@@ -77,6 +78,7 @@ public class AddQuestionFragment extends Fragment implements FirebaseObserver {
         data.author = (FirebaseAuth.getInstance().getCurrentUser().getDisplayName() + "-" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         data.study = parent.major;
         data.id = UUID.randomUUID().toString().replaceAll("-", "");
+        data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
 
         viewModel.addQuestion(data, this);
     }

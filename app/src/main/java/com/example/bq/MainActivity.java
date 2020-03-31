@@ -7,14 +7,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +24,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.bq.datatypes.QuestionResponseData;
 import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.FirebaseObserver;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -74,6 +71,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        DataManager.getInstance().isAdmin(user.getUid(), new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                if (obj instanceof HashMap) {
+                    HashMap<String, Object> result = (HashMap<String, Object>) obj;
+                    if (result.get("action") == "isAdmin") {
+                        if ((boolean) result.get("result")) {
+                            isAdmin = true;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -82,6 +93,40 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        CheckPermission();
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                userLocation = location;
+                Log.d("Location", "Updated!");
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(MainActivity.this, "Please Enable GPS and Internet", LENGTH_SHORT).show();
+            }
+        };
+
+        getLocation();
+
+        try {
+            userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.hide();
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,30 +148,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        CheckPermission();
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                userLocation = location;
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Toast.makeText(MainActivity.this, "Please Enable GPS and Internet", LENGTH_SHORT).show();
-            }
-        };
     }
 
     @Override
@@ -134,20 +155,18 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        DataManager.getInstance().isAdmin(user.getUid(), new FirebaseObserver() {
-            @Override
-            public void notifyOfCallback(Object obj) {
-                if (obj instanceof HashMap) {
-                    HashMap<String, Object> result = (HashMap<String, Object>) obj;
-                    if (result.get("action") == "isAdmin") {
-                        if ((boolean) result.get("result")) {
-                            isAdmin = true;
-                            menu.findItem(R.id.action_admin).setVisible(true);
-                        }
-                    }
-                }
-            }
-        });
+        Log.d("CreateOptionsMenu", "Executed before isAdmin becomes true " + isAdmin);
+        if (isAdmin) {
+            menu.findItem(R.id.action_admin).setVisible(true);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu){
+        if (isAdmin) {
+            menu.findItem(R.id.action_admin).setVisible(true);
+        }
         return true;
     }
 
@@ -169,50 +188,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 return true;
+            case R.id.action_admin:
+                DataManager.getInstance().respondToQuestion(new QuestionResponseData(), new FirebaseObserver() {
+                    @Override
+                    public void notifyOfCallback(Object obj) {
+                        Log.d("This works!", "KEKW");
+                    }
+                });
+                return true;
         }
         return false;
-    }
-//    public void logout(View view){
-//        FirebaseAuth.getInstance().signOut();
-//        startActivity(new Intent(getApplicationContext(), Login.class));
-//        finish();
-//    }
-
-    public void onButtonShowPopupWindowClick(View view) {
-
-        // inflate the layout of the popup window
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_window, null);
-
-        // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window token
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                return true;
-            }
-        });
-    }
-
-    public void onBookClick(View v) {
-        startActivity(new Intent(getApplicationContext(), Books.class));
-
-    }
-
-    public void onQuestionsClick(View v) {
-        startActivity(new Intent(getApplicationContext(), Questions.class));
-
     }
 
     @Override
@@ -231,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     public void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 0, locationListener);
         } catch (SecurityException e) {
             e.printStackTrace();
         }

@@ -69,6 +69,7 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
         TextView price = root.findViewById(R.id.bookPrice);
         TextView seller = root.findViewById(R.id.bookSeller);
         TextView distance = root.findViewById(R.id.bookDistance);
+        TextView timeStamp = root.findViewById(R.id.bookTimeStamp);
 
         deleteBook = root.findViewById(R.id.deleteBook);
 
@@ -77,6 +78,7 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
         description.setText(bookData.description == null ? "No description" : bookData.description);
         price.setText(bookData.price == null ? "No price" : bookData.price);
         seller.setText(bookData.seller == null ? "No seller" : bookData.seller.split("-")[0]);
+        timeStamp.setText(TimeStamp.toTime(bookData.timeStamp));
 
         seller.setOnClickListener(new View.OnClickListener() {
             @Override

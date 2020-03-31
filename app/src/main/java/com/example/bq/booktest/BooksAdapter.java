@@ -50,7 +50,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
         holder.bookTitle.setText(data.title);
         holder.bookPrice.setText(data.price);
         holder.bookSeller.setText(data.seller.split("-")[0]);
-        holder.bookTimestamp.setText("No Time");
+        holder.bookTimestamp.setText(TimeStamp.toTime(data.timeStamp));
         String[] longLat = data.location.split(":");
         Location location = new Location("");
         location.setLatitude(Float.parseFloat(longLat[0].trim()));

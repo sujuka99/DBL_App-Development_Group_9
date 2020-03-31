@@ -1,10 +1,13 @@
 package com.example.bq.questiontest;
 
+import android.provider.ContactsContract;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bq.datatypes.QuestionData;
+import com.example.bq.datatypes.QuestionResponseData;
 import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.FirebaseObserver;
 
@@ -15,10 +18,13 @@ import java.util.List;
 public class QuestionViewModel extends ViewModel {
 
     private MutableLiveData<List<QuestionData>> questions;
+    private MutableLiveData<List<QuestionResponseData>> responses;
 
     public QuestionViewModel() {
         questions = new MutableLiveData<>();
+        responses = new MutableLiveData<>();
         questions.setValue(new ArrayList<QuestionData>());
+        responses.setValue(new ArrayList<QuestionResponseData>());
     }
 
     public void loadQuestionsIntoVM(String study) {
@@ -36,8 +42,27 @@ public class QuestionViewModel extends ViewModel {
         });
     }
 
+    public void loadResponsesIntoVM(String study, String questionID){
+        if(questionID == null || study == null){
+            return;
+        }
+        DataManager.getInstance().getQuestionResponses(questionID, new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                if(obj instanceof  ArrayList){
+                    ArrayList<QuestionResponseData> data = (ArrayList<QuestionResponseData>) obj;
+                    responses.setValue(data);
+                }
+            }
+        });
+    }
+
     public LiveData<List<QuestionData>> getQuestions() {
         return questions;
+    }
+
+    public LiveData<List<QuestionResponseData>> getResponses(){
+        return responses;
     }
 
     public void addQuestion(final QuestionData data, final FirebaseObserver observer) {
@@ -66,7 +91,22 @@ public class QuestionViewModel extends ViewModel {
         });
     }
 
-    public void respondToQuestion() {
+    public void respondToQuestion(QuestionResponseData data, final FirebaseObserver observer) {
+        DataManager.getInstance().respondToQuestion(data, new FirebaseObserver() {
+            @Override
+            public void notifyOfCallback(Object obj) {
+                if(obj instanceof Boolean){
+                    HashMap<String, Object> response = new HashMap<>();
+                    response.put("action", "respondToQuestion");
+                    if((boolean) obj){
+                        response.put("result", true);
 
+                    }else{
+                        response.put("result", false);
+                    }
+                    observer.notifyOfCallback(response);
+                }
+            }
+        });
     }
 }

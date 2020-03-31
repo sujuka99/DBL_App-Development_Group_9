@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.bq.MainActivity;
 import com.example.bq.datatypes.BookData;
 import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.FirebaseObserver;
@@ -21,16 +22,17 @@ public class BookViewModel extends ViewModel {
         books.setValue(new ArrayList<BookData>());
     }
 
-    public void loadBooksIntoViewModel(String study) {
+    public void loadBooksIntoViewModel(String study, final FirebaseObserver observer) {
         if (study == null) {
             return;
         }
-        DataManager.getInstance().getBooks(study, "", 0, "", new FirebaseObserver() {
+        DataManager.getInstance().getBooks(study, 0, MainActivity.userLocation, new FirebaseObserver() {
             @Override
             public void notifyOfCallback(Object obj) {
                 if (obj instanceof ArrayList) {
                     ArrayList<BookData> data = (ArrayList<BookData>) obj;
                     books.setValue(data);
+                    observer.notifyOfCallback(true);
                 }
             }
         });

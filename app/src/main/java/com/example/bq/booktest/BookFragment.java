@@ -18,12 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
 import com.example.bq.datatypes.BookData;
+import com.example.bq.profiletest.FirebaseObserver;
 import com.example.bq.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookFragment extends Fragment {
+public class BookFragment extends Fragment implements FirebaseObserver {
 
     private BookViewModel viewModel;
     private HomeFragment parent;
@@ -75,16 +76,13 @@ public class BookFragment extends Fragment {
     }
 
     private void loadDataInVM() {
-        viewModel.loadBooksIntoViewModel(parent.major);
+        viewModel.loadBooksIntoViewModel(parent.major, this);
 
         final Observer<List<BookData>> bookDataObserver = new Observer<List<BookData>>() {
             @Override
             public void onChanged(final List<BookData> data) {
                 bookData.clear();
                 bookData.addAll(data);
-                if (bookBar.getVisibility() != View.GONE) {
-                    bookBar.setVisibility(View.GONE);
-                }
                 adapter.notifyDataSetChanged();
             }
         };
@@ -94,6 +92,15 @@ public class BookFragment extends Fragment {
 
     public void loadBookDetails(int position) {
         parent.loadBookDetails(bookData.get(position));
+    }
+
+    @Override
+    public void notifyOfCallback(Object obj) {
+        if((boolean) obj){
+            if (bookBar.getVisibility() != View.GONE) {
+                bookBar.setVisibility(View.GONE);
+            }
+        }
     }
 }
 

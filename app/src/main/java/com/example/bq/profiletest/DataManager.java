@@ -2,6 +2,7 @@ package com.example.bq.profiletest;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.example.bq.datatypes.BookData;
 import com.example.bq.datatypes.QuestionData;
+import com.example.bq.datatypes.QuestionResponseData;
 import com.example.bq.datatypes.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -235,12 +237,11 @@ public class DataManager {
         });
     }
 
-    public void getBooks(String study, String ordering, int page, String query, final FirebaseObserver observer) {
+    public void getBooks(String study, int page, Location loc, final FirebaseObserver observer) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("study", study);
-        data.put("order", ordering);
         data.put("page", page);
-        data.put("query", query);
+        data.put("location", loc.getLatitude() + ":" + loc.getLongitude());
 
         functions.getHttpsCallable("getBooks").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
@@ -344,6 +345,41 @@ public class DataManager {
                     observer.notifyOfCallback(true);
                 } else {
                     observer.notifyOfCallback(false);
+                }
+            }
+        });
+    }
+
+    public void getQuestionResponses(String id, final FirebaseObserver observer) {
+        functions.getHttpsCallable("getQuestionResponses").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                if (task.getResult().getData() != null) {
+                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                    if ((boolean) response.get("success")) {
+                        List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
+                        List<QuestionResponseData> callBack = new ArrayList<>();
+                        for (HashMap<String, String> question : result) {
+                            callBack.add(new QuestionResponseData(question));
+                        }
+                        observer.notifyOfCallback(callBack);
+                    }
+                }
+            }
+        });
+    }
+
+    public void respondToQuestion(QuestionResponseData data, final FirebaseObserver observer) {
+        functions.getHttpsCallable("respondToQuestion").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                if (task.getResult().getData() != null) {
+                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+                    if ((boolean) response.get("success")) {
+                        observer.notifyOfCallback(true);
+                    } else {
+                        observer.notifyOfCallback(false);
+                    }
                 }
             }
         });
