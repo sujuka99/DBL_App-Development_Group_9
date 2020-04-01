@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.util.DebugUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,12 +17,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -195,14 +198,20 @@ public class DataManager {
         });
     }
 
-    public void banUser(String banID, final FirebaseObserver observer) {
-        functions.getHttpsCallable("banUser").call(banID).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+    public void banUser(String email, final FirebaseObserver observer) {
+        functions.getHttpsCallable("banUser").call(email).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
                 if ((boolean) response.get("success")) {
+                    if(response.containsKey("error")){
+                        Log.d("Yeah...", "this is always true and the error is " + response.get("error"));
+                    }
                     observer.notifyOfCallback(true);
                 } else {
+                    if(response.containsKey("error")){
+                        Log.d("Works fine?", "" + response.get("error"));
+                    }
                     observer.notifyOfCallback(false);
                 }
             }
@@ -345,13 +354,15 @@ public class DataManager {
                     observer.notifyOfCallback(true);
                 } else {
                     observer.notifyOfCallback(false);
+                    Log.d("Delete Question", (String) response.get("error"));
                 }
             }
         });
     }
 
     public void getQuestionResponses(String id, final FirebaseObserver observer) {
-        functions.getHttpsCallable("getQuestionResponses").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+        Log.d("GetQuestionResponses", "QUESTION ID: " + id);
+        functions.getHttpsCallable("messageUser").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 if (task.getResult().getData() != null) {
@@ -370,7 +381,7 @@ public class DataManager {
     }
 
     public void respondToQuestion(QuestionResponseData data, final FirebaseObserver observer) {
-        functions.getHttpsCallable("respondToQuestion").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+        functions.getHttpsCallable("viewBannedUsers").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 if (task.getResult().getData() != null) {
@@ -379,6 +390,30 @@ public class DataManager {
                         observer.notifyOfCallback(true);
                     } else {
                         observer.notifyOfCallback(false);
+                    }
+                }
+            }
+        });
+    }
+
+    public void getUsers(final FirebaseObserver observer){
+        functions.getHttpsCallable("hello").call().addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
+            @Override
+            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
+                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
+
+                if(response != null){
+                    if((boolean) response.get("success")){
+                        Object result = response.get("result");
+                        if(result instanceof ArrayList){
+                            ArrayList<HashMap<String, Object>> resultList = (ArrayList<HashMap<String, Object>>) result;
+                            Log.d("Result", resultList.toString());
+                            List<UserData> userData = new ArrayList<>();
+                            for(HashMap<String, Object> map : resultList){
+                                userData.add(new UserData(map));
+                            }
+                            observer.notifyOfCallback(userData);
+                        }
                     }
                 }
             }

@@ -79,6 +79,7 @@ public class AddQuestionFragment extends Fragment implements FirebaseObserver {
         data.study = parent.major;
         data.id = UUID.randomUUID().toString().replaceAll("-", "");
         data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
+        data.description = questionDescription.getText().toString();
 
         viewModel.addQuestion(data, this);
     }

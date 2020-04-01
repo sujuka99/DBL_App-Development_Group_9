@@ -57,7 +57,7 @@ public class QuestionFragment extends Fragment {
     private void loadDataInVM() {
         viewModel.loadQuestionsIntoVM(parent.major);
 
-        final Observer<List<QuestionData>> bookDataObserver = new Observer<List<QuestionData>>() {
+        final Observer<List<QuestionData>> questionDataObserver = new Observer<List<QuestionData>>() {
             @Override
             public void onChanged(final List<QuestionData> data) {
                 questionData.clear();
@@ -66,7 +66,7 @@ public class QuestionFragment extends Fragment {
             }
         };
 
-        viewModel.getQuestions().observe(this, bookDataObserver);
+        viewModel.getQuestions().observe(this, questionDataObserver);
     }
 
     public void initRecycleView(View root) {

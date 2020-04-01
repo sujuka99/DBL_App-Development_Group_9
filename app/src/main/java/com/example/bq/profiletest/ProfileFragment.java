@@ -18,14 +18,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
+import com.example.bq.booktest.BookDetailsFragment;
+import com.example.bq.datatypes.BookData;
 import com.example.bq.datatypes.UserData;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.HashMap;
 
 public class ProfileFragment extends Fragment {
 
     private ProfileViewModel viewModel;
 
-    private final String id;
+    private String id;
 
     private TextView fullName;
     private TextView university;
@@ -35,9 +39,12 @@ public class ProfileFragment extends Fragment {
 
     private ImageView profilePicture;
 
-    public ProfileFragment(String id) {
-        super();
-        this.id = id;
+    public static ProfileFragment newInstance(String id){
+        Bundle args = new Bundle();
+        args.putSerializable("id", id);
+        ProfileFragment f = new ProfileFragment();
+        f.setArguments(args);
+        return f;
     }
 
     @Nullable
@@ -46,6 +53,12 @@ public class ProfileFragment extends Fragment {
 
         // First we initialize the ViewModel of this fragment
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+
+        try {
+            id = (String) getArguments().getSerializable("id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Then we load in our layout
         View root = inflater.inflate(R.layout.fragment_profile, container, false);

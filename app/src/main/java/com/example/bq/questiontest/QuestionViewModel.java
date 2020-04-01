@@ -1,7 +1,5 @@
 package com.example.bq.questiontest;
 
-import android.provider.ContactsContract;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -42,14 +40,14 @@ public class QuestionViewModel extends ViewModel {
         });
     }
 
-    public void loadResponsesIntoVM(String study, String questionID){
-        if(questionID == null || study == null){
+    public void loadResponsesIntoVM(String questionID) {
+        if (questionID == null) {
             return;
         }
         DataManager.getInstance().getQuestionResponses(questionID, new FirebaseObserver() {
             @Override
             public void notifyOfCallback(Object obj) {
-                if(obj instanceof  ArrayList){
+                if (obj instanceof ArrayList) {
                     ArrayList<QuestionResponseData> data = (ArrayList<QuestionResponseData>) obj;
                     responses.setValue(data);
                 }
@@ -61,7 +59,7 @@ public class QuestionViewModel extends ViewModel {
         return questions;
     }
 
-    public LiveData<List<QuestionResponseData>> getResponses(){
+    public LiveData<List<QuestionResponseData>> getResponses() {
         return responses;
     }
 
@@ -91,17 +89,19 @@ public class QuestionViewModel extends ViewModel {
         });
     }
 
-    public void respondToQuestion(QuestionResponseData data, final FirebaseObserver observer) {
+    public void respondToQuestion(final QuestionResponseData data, final FirebaseObserver observer) {
+        final List<QuestionResponseData> responseList = responses.getValue();
         DataManager.getInstance().respondToQuestion(data, new FirebaseObserver() {
             @Override
             public void notifyOfCallback(Object obj) {
-                if(obj instanceof Boolean){
+                if (obj instanceof Boolean) {
                     HashMap<String, Object> response = new HashMap<>();
                     response.put("action", "respondToQuestion");
-                    if((boolean) obj){
+                    if ((boolean) obj) {
                         response.put("result", true);
-
-                    }else{
+                        responseList.add(data);
+                        responses.setValue(responseList);
+                    } else {
                         response.put("result", false);
                     }
                     observer.notifyOfCallback(response);
