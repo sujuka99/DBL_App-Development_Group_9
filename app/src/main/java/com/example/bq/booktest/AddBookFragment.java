@@ -90,7 +90,7 @@ public class AddBookFragment extends Fragment implements FirebaseObserver {
         final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Choose an image to upload");
+        builder.setTitle("Choose an image to upload");
 
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
