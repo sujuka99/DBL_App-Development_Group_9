@@ -33,6 +33,8 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
 
     private Button deleteBook;
 
+    private HomeFragment parent;
+
     public static BookDetailsFragment newInstance(BookData data) {
         Bundle args = new Bundle();
         args.putSerializable("data", data.toMap());
@@ -47,6 +49,8 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
         View root = inflater.inflate(R.layout.fragment_bookdetails, container, false);
 
         viewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+
+        parent = (HomeFragment) getParentFragment();
 
         try {
             bookData = new BookData((HashMap<String, String>) getArguments().getSerializable("data"));
@@ -83,7 +87,7 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
         seller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Load the user its profile
+                parent.loadProfile(bookData.seller.split("-")[1].trim());
             }
         });
 
@@ -120,7 +124,6 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
             if (result.get("action") == "removeBook") {
                 if ((boolean) result.get("result")) {
                     Toast.makeText(getActivity().getApplicationContext(), "Successfully removed the book!", Toast.LENGTH_SHORT).show();
-                    HomeFragment parent = (HomeFragment) getParentFragment();
                     parent.getChildFragmentManager().popBackStackImmediate();
                     return;
                 }

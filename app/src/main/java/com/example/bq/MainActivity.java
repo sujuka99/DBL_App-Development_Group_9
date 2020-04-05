@@ -7,10 +7,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,12 +35,16 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.bq.datatypes.QuestionResponseData;
 import com.example.bq.profiletest.DataManager;
 import com.example.bq.profiletest.FirebaseObserver;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.HashMap;
 
@@ -181,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     // I still dont know how to link it to the actual logout button
     // so I used the settings button since it does nothing jet
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 FirebaseAuth.getInstance().signOut();
@@ -189,15 +201,66 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.action_admin:
-                DataManager.getInstance().respondToQuestion(new QuestionResponseData(), new FirebaseObserver() {
-                    @Override
-                    public void notifyOfCallback(Object obj) {
-                        Log.d("This works!", "KEKW");
-                    }
-                });
+                openAdminWindow(getWindow().getDecorView().getRootView());
                 return true;
         }
         return false;
+    }
+
+    public void openAdminWindow(View view) {
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = inflater.inflate(R.layout.popup_admin, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+
+        popupView.findViewById(R.id.adminCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        popupView.findViewById(R.id.adminBan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText email = popupView.findViewById(R.id.adminUser);
+                if(email.getText().toString().trim().length() == 0){
+                    email.setError("Fill in the email of the user to ban!");
+                    return;
+                }
+
+                DataManager.getInstance().banUser(email.getText().toString(), new FirebaseObserver() {
+                    @Override
+                    public void notifyOfCallback(Object obj) {
+                        if((boolean) obj){
+                            Toast.makeText(getApplicationContext(), "Banned the user", LENGTH_SHORT).show();
+                            popupWindow.dismiss();
+                            return;
+                        }
+                        Toast.makeText(getApplicationContext(), "User does not exist!", LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     @Override

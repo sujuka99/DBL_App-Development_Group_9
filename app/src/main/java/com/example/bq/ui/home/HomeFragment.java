@@ -21,6 +21,7 @@ import com.example.bq.booktest.BookDetailsFragment;
 import com.example.bq.booktest.BookFragment;
 import com.example.bq.datatypes.BookData;
 import com.example.bq.datatypes.QuestionData;
+import com.example.bq.profiletest.ProfileFragment;
 import com.example.bq.questiontest.AddQuestionFragment;
 import com.example.bq.questiontest.QuestionDetails;
 import com.example.bq.questiontest.QuestionFragment;
@@ -134,6 +135,11 @@ public class HomeFragment extends Fragment {
 
     public void loadQuestionDetails(QuestionData data) {
         QuestionDetails fragment = QuestionDetails.newInstance(data);
+        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
+    }
+
+    public void loadProfile(String id){
+        ProfileFragment fragment = ProfileFragment.newInstance(id);
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
 }

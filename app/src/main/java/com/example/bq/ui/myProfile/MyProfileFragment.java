@@ -103,12 +103,4 @@ public class MyProfileFragment extends Fragment {
         viewModel.getUserData().observe(this, userDataObserver);
         viewModel.getProfilePicture().observe(this, profilePictureObserver);
     }
-
-    public void loadProfile(String id){
-        ProfileFragment nextFrag= new ProfileFragment(id);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, nextFrag, "findThisFragment")
-                .addToBackStack(null)
-                .commit();
-    }
 }

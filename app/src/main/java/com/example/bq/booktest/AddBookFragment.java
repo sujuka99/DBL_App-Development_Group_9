@@ -95,7 +95,6 @@ public class AddBookFragment extends Fragment implements FirebaseObserver {
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-
                 switch (options[item].toString()) {
                     case "Take Photo":
                         Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);

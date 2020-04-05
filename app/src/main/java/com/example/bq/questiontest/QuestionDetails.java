@@ -97,7 +97,7 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
         author.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Load the user its profile
+                parent.loadProfile(questionData.author.split("-")[1].trim());
             }
         });
 
@@ -116,7 +116,7 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
         respond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (message.getText() == null || message.getText().toString() == "") {
+                if (message.getText() == null || message.getText().toString().trim().length() == 0) {
                     message.setError("You must fill in a response!");
                     return;
                 }
@@ -158,7 +158,15 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
     public void notifyOfCallback(Object obj) {
         if (obj instanceof HashMap) {
             HashMap<String, Object> result = (HashMap<String, Object>) obj;
-            if (result.get("action") == "respondToQuestion") {
+            if (result.get("action") == "removeQuestion") {
+                if ((boolean) result.get("result")) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully removed the question!", Toast.LENGTH_SHORT).show();
+                    HomeFragment parent = (HomeFragment) getParentFragment();
+                    parent.getChildFragmentManager().popBackStackImmediate();
+                    return;
+                }
+                Toast.makeText(getActivity().getApplicationContext(), "Could not remove the question!", Toast.LENGTH_SHORT).show();
+            } else if (result.get("action") == "respondToQuestion") {
                 if ((boolean) result.get("result")) {
                     Toast.makeText(getActivity().getApplicationContext(), "Successfully responded!", Toast.LENGTH_SHORT).show();
                     message.setText("");
@@ -170,7 +178,7 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
     }
 
     private void loadDataInVM() {
-        viewModel.loadResponsesIntoVM(questionData.study, questionData.id);
+        viewModel.loadResponsesIntoVM(questionData.id);
 
         final Observer<List<QuestionResponseData>> questionResponseObserver = new Observer<List<QuestionResponseData>>() {
             @Override
