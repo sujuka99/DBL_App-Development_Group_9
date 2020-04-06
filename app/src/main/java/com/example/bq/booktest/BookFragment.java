@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
-import com.example.bq.datatypes.BookData;
-import com.example.bq.profiletest.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.BookData;
+import com.example.bq.datamanager.FirebaseObserver;
 import com.example.bq.ui.home.HomeFragment;
 
 import java.util.ArrayList;
@@ -43,7 +43,8 @@ public class BookFragment extends Fragment implements FirebaseObserver {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_books, container, false);
 
         parent = (HomeFragment) getParentFragment();
@@ -69,7 +70,8 @@ public class BookFragment extends Fragment implements FirebaseObserver {
 
     private void initRecycleView(View root) {
         RecyclerView recyclerView = root.findViewById(R.id.recycle_books);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL));
         adapter = new BooksAdapter(bookData, this, getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -90,13 +92,13 @@ public class BookFragment extends Fragment implements FirebaseObserver {
         viewModel.getBooks().observe(this, bookDataObserver);
     }
 
-    public void loadBookDetails(int position) {
+    void loadBookDetails(int position) {
         parent.loadBookDetails(bookData.get(position));
     }
 
     @Override
     public void notifyOfCallback(Object obj) {
-        if((boolean) obj){
+        if ((boolean) obj) {
             if (bookBar.getVisibility() != View.GONE) {
                 bookBar.setVisibility(View.GONE);
             }

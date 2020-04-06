@@ -2,9 +2,9 @@ package com.example.bq;
 
 public class Chat {
 
-    private  String sender;
-    private  String receiver;
-    private  String message;
+    private String sender;
+    private String receiver;
+    private String message;
 
 
     public Chat(String sender, String receiver, String message) {
@@ -13,7 +13,7 @@ public class Chat {
         this.message = message;
     }
 
-    public Chat(){
+    public Chat() {
 
     }
 

@@ -1,6 +1,4 @@
-package com.example.bq.datatypes;
-
-import android.location.Location;
+package com.example.bq.datamanager.datatypes;
 
 import java.util.HashMap;
 
@@ -16,14 +14,14 @@ public class BookData {
     public String timeStamp;
 
     public BookData(HashMap<String, String> data) {
-        this.title = data.containsKey("title") ?  data.get("title") : null;
-        this.author = data.containsKey("author") ?  data.get("author") : null;
-        this.study = data.containsKey("study") ?  data.get("study") : null;
-        this.id = data.containsKey("id") ?  data.get("id") : null;
-        this.location = data.containsKey("location") ?  data.get("location") : null;
-        this.description = data.containsKey("description") ?  data.get("description") : null;
-        this.price = data.containsKey("price") ?  data.get("price") : null;
-        this.seller = data.containsKey("seller") ?  data.get("seller") : null;
+        this.title = data.containsKey("title") ? data.get("title") : null;
+        this.author = data.containsKey("author") ? data.get("author") : null;
+        this.study = data.containsKey("study") ? data.get("study") : null;
+        this.id = data.containsKey("id") ? data.get("id") : null;
+        this.location = data.containsKey("location") ? data.get("location") : null;
+        this.description = data.containsKey("description") ? data.get("description") : null;
+        this.price = data.containsKey("price") ? data.get("price") : null;
+        this.seller = data.containsKey("seller") ? data.get("seller") : null;
         this.timeStamp = data.containsKey("timeStamp") ? data.get("timeStamp") : null;
     }
 
@@ -56,7 +54,7 @@ public class BookData {
         if (seller != null) {
             result.put("seller", seller);
         }
-        if(timeStamp != null){
+        if (timeStamp != null) {
             result.put("timeStamp", timeStamp);
         }
         return result;

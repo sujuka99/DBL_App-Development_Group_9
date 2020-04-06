@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bq.MessageActivity;
 import com.example.bq.R;
-import com.example.bq.datatypes.UserData;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.bq.datamanager.datatypes.UserData;
 
 import java.util.List;
 

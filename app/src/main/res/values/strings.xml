@@ -41,4 +41,15 @@
     <string name="popup_books_button">Books</string>
     <string name="popup_questions_button">Questions</string>
     <string name="admin">Admin</string>
+    <string name="SelectImageDialogTitle">Choose an image to upload</string>
+    <string name="SelectImageDialogOpt1">Take Photo</string>
+    <string name="SelectImageDialogOpt2">Choose from Gallery</string>
+    <string name="SelectImageDialogCancel">Cancel</string>
+    <string name="ErrorBookTitle">A book must have a title!</string>
+    <string name="ErrorBookAuthor">A book must have an author!</string>
+    <string name="ErrorBookDescription">A book must have a description!</string>
+    <string name="ErrorBookPrice">A book must have a price!</string>
+    <string name="ErrorNotLoggedIn">You must be logged in to do that!</string>
+    <string name="MessageSuccessAddBook">Successfully added a book!</string>
+    <string name="MessageNoSuccessAddBook">Unsuccessful when attempting to add the book!</string>
 </resources>

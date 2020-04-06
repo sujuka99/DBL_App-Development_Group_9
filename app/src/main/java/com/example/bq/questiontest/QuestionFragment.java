@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
-import com.example.bq.datatypes.QuestionData;
+import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.ui.home.HomeFragment;
 
 import java.util.ArrayList;

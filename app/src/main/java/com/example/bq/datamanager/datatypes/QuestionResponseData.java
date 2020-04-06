@@ -1,4 +1,4 @@
-package com.example.bq.datatypes;
+package com.example.bq.datamanager.datatypes;
 
 import java.util.HashMap;
 
@@ -9,14 +9,15 @@ public class QuestionResponseData {
     public String body;
     public String timeStamp;
 
-    public QuestionResponseData(){}
+    public QuestionResponseData() {
+    }
 
-    public QuestionResponseData(HashMap<String, String> data){
-        this.id = data.containsKey("id") ?  data.get("id") : null;
-        this.author = data.containsKey("author") ?  data.get("author") : null;
-        this.questionID = data.containsKey("questionID") ?  data.get("questionID") : null;
-        this.body = data.containsKey("body") ?  data.get("body") : null;
-        this.timeStamp = data.containsKey("timeStamp") ?  data.get("timeStamp") : null;
+    public QuestionResponseData(HashMap<String, String> data) {
+        this.id = data.containsKey("id") ? data.get("id") : null;
+        this.author = data.containsKey("author") ? data.get("author") : null;
+        this.questionID = data.containsKey("questionID") ? data.get("questionID") : null;
+        this.body = data.containsKey("body") ? data.get("body") : null;
+        this.timeStamp = data.containsKey("timeStamp") ? data.get("timeStamp") : null;
     }
 
     public HashMap<String, String> toMap() {

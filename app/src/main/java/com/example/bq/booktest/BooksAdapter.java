@@ -16,20 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bq.MainActivity;
 import com.example.bq.R;
-import com.example.bq.datatypes.BookData;
+import com.example.bq.datamanager.datatypes.BookData;
 
 import java.util.List;
 
 public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHolder> {
-
-    private String defaultLink = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png";
 
     private List<BookData> bookData;
 
     private BookFragment fragment;
     private Context bContext;
 
-    public BooksAdapter(List<BookData> data, BookFragment fragment, Context bContext) {
+    BooksAdapter(List<BookData> data, BookFragment fragment, Context bContext) {
         this.bookData = data;
         this.bContext = bContext;
         this.fragment = fragment;
@@ -37,13 +35,17 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
 
     @NonNull
     @Override
-    public BooksAdapter.BooksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_books_listitem, parent, false);
+    public BooksAdapter.BooksViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                           int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.activity_books_listitem, parent, false);
         return new BooksViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BooksAdapter.BooksViewHolder holder, final int position) {
+        String defaultLink = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/" +
+                "Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png";
         Glide.with(bContext).asBitmap().load(defaultLink).into(holder.bookImage);
 
         BookData data = bookData.get(position);
@@ -56,7 +58,8 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
         location.setLatitude(Float.parseFloat(longLat[0].trim()));
         location.setLongitude(Float.parseFloat(longLat[1].trim()));
 
-        holder.bookDistance.setText("" + Math.round(MainActivity.userLocation.distanceTo(location)) + "m");
+        holder.bookDistance.setText(Math.round(MainActivity.userLocation.distanceTo(location))
+                + "m");
 
         holder.bookLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +75,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
         return bookData.size();
     }
 
-    public class BooksViewHolder extends RecyclerView.ViewHolder {
+    static class BooksViewHolder extends RecyclerView.ViewHolder {
 
         ImageView bookImage;
         TextView bookTitle;
@@ -82,7 +85,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksViewHol
         TextView bookDistance;
         ConstraintLayout bookLayout;
 
-        public BooksViewHolder(@NonNull View itemView) {
+        BooksViewHolder(@NonNull View itemView) {
             super(itemView);
             bookImage = itemView.findViewById(R.id.book_image);
             bookTitle = itemView.findViewById(R.id.book_title);

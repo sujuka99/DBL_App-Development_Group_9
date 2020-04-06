@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.bq.R;
 
-public class HomeStudies extends Fragment {
+public class HomeStudiesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

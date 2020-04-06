@@ -13,43 +13,40 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bq.datamanager.DataManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class Login extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     EditText mFullName, mEmail, mPassword;
-    Button mLoginBtn;
-    TextView mregisterBtn;
+    Button mRegisterBtn;
+    TextView mLoginBtn;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
 
-        // If the user is already logged in go to the Main activity
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-        }
-
-        setContentView(R.layout.activity_login);
-
+        mFullName = findViewById(R.id.fullName);
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
-        mLoginBtn = findViewById(R.id.loginBtn);
-        mregisterBtn = findViewById(R.id.createText);
+        mRegisterBtn = findViewById(R.id.loginBtn);
+        mLoginBtn = findViewById(R.id.createText);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBar);
 
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String fullName = mFullName.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
@@ -64,44 +61,62 @@ public class Login extends AppCompatActivity {
                     return;
                 }
                 if (password.length() < 6) {
-                    mPassword.setError("Password must contain 6 characters");
+                    mPassword.setError("Password must contain at least 6 characters");
+                    return;
+                }
+                if (fullName.length() < 6) {
+                    mFullName.setError("Full name must contain at least 6 characters");
                     return;
                 }
                 if (password.length() > 16) {
                     mPassword.setError("Password must contain at most 16 characters");
                     return;
                 }
-                mLoginBtn.setVisibility(View.INVISIBLE);
+                if (fullName.length() > 20) {
+                    mFullName.setError("Full name must contain at most 20 characters");
+                    return;
+                }
+                mRegisterBtn.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
 
-                //login the user
+                //register the user
 
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            assert user != null;
+                            String userID = user.getUid();
+
+                            DataManager.getInstance().createUserInDatabase(userID, fullName);
+                            FirebaseAuth.getInstance().getCurrentUser()
+                                    .updateProfile(new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(fullName).build());
+
                             // Sign in success, display message, redirect to Main activity
-                            Toast.makeText(Login.this, "Logged in succesfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "User created", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             progressBar.setVisibility(View.GONE);
                             finish();
-                            //FirebaseUser user = mAuth.getCurrentUser();
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(Login.this, "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Registration failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
-                            mLoginBtn.setVisibility(View.VISIBLE);
+                            mRegisterBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 });
             }
         });
 
-        mregisterBtn.setOnClickListener(new View.OnClickListener() {
+
+        mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Register.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         });

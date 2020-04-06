@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
-import com.example.bq.datatypes.QuestionData;
-import com.example.bq.profiletest.FirebaseObserver;
+import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 

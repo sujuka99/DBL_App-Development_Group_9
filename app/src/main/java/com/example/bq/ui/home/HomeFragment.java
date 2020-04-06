@@ -1,6 +1,5 @@
 package com.example.bq.ui.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,16 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.bq.Questions;
 import com.example.bq.R;
 import com.example.bq.booktest.AddBookFragment;
 import com.example.bq.booktest.BookDetailsFragment;
 import com.example.bq.booktest.BookFragment;
-import com.example.bq.datatypes.BookData;
-import com.example.bq.datatypes.QuestionData;
-import com.example.bq.profiletest.ProfileFragment;
+import com.example.bq.datamanager.datatypes.BookData;
+import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.questiontest.AddQuestionFragment;
-import com.example.bq.questiontest.QuestionDetails;
+import com.example.bq.questiontest.QuestionDetailsFragment;
 import com.example.bq.questiontest.QuestionFragment;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -46,7 +43,7 @@ public class HomeFragment extends Fragment {
         if (getChildFragmentManager().getFragments().size() > 0) {
             return;
         }
-        Fragment homeStudies = new HomeStudies();
+        Fragment homeStudies = new HomeStudiesFragment();
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, homeStudies).commit();
     }
 
@@ -123,7 +120,7 @@ public class HomeFragment extends Fragment {
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
 
-    public void addQuestion(){
+    public void addQuestion() {
         AddQuestionFragment fragment = new AddQuestionFragment();
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
@@ -134,12 +131,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void loadQuestionDetails(QuestionData data) {
-        QuestionDetails fragment = QuestionDetails.newInstance(data);
-        getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
-    }
-
-    public void loadProfile(String id){
-        ProfileFragment fragment = ProfileFragment.newInstance(id);
+        QuestionDetailsFragment fragment = QuestionDetailsFragment.newInstance(data);
         getChildFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
     }
 }

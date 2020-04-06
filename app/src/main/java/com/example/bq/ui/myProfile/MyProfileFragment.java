@@ -1,7 +1,6 @@
 package com.example.bq.ui.myProfile;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
-import com.example.bq.profiletest.ProfileFragment;
-import com.example.bq.datatypes.UserData;
+import com.example.bq.datamanager.datatypes.UserData;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MyProfileFragment extends Fragment {
@@ -80,6 +78,7 @@ public class MyProfileFragment extends Fragment {
 
     /**
      * Let the ViewModel load the data of the user and register to data changes
+     *
      * @param id
      */
     public void loadDataInVM(String id) {

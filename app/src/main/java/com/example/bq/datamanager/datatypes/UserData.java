@@ -1,4 +1,4 @@
-package com.example.bq.datatypes;
+package com.example.bq.datamanager.datatypes;
 
 import java.util.HashMap;
 

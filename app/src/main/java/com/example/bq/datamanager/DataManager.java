@@ -1,30 +1,27 @@
-package com.example.bq.profiletest;
+package com.example.bq.datamanager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
-import android.util.DebugUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.bq.datatypes.BookData;
-import com.example.bq.datatypes.QuestionData;
-import com.example.bq.datatypes.QuestionResponseData;
-import com.example.bq.datatypes.UserData;
+import com.example.bq.datamanager.datatypes.BookData;
+import com.example.bq.datamanager.datatypes.QuestionData;
+import com.example.bq.datamanager.datatypes.QuestionResponseData;
+import com.example.bq.datamanager.datatypes.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -204,12 +201,12 @@ public class DataManager {
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
                 if ((boolean) response.get("success")) {
-                    if(response.containsKey("error")){
+                    if (response.containsKey("error")) {
                         Log.d("Yeah...", "this is always true and the error is " + response.get("error"));
                     }
                     observer.notifyOfCallback(true);
                 } else {
-                    if(response.containsKey("error")){
+                    if (response.containsKey("error")) {
                         Log.d("Works fine?", "" + response.get("error"));
                     }
                     observer.notifyOfCallback(false);
@@ -396,20 +393,20 @@ public class DataManager {
         });
     }
 
-    public void getUsers(final FirebaseObserver observer){
+    public void getUsers(final FirebaseObserver observer) {
         functions.getHttpsCallable("hello").call().addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
             @Override
             public void onComplete(@NonNull Task<HttpsCallableResult> task) {
                 HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
 
-                if(response != null){
-                    if((boolean) response.get("success")){
+                if (response != null) {
+                    if ((boolean) response.get("success")) {
                         Object result = response.get("result");
-                        if(result instanceof ArrayList){
+                        if (result instanceof ArrayList) {
                             ArrayList<HashMap<String, Object>> resultList = (ArrayList<HashMap<String, Object>>) result;
                             Log.d("Result", resultList.toString());
                             List<UserData> userData = new ArrayList<>();
-                            for(HashMap<String, Object> map : resultList){
+                            for (HashMap<String, Object> map : resultList) {
                                 userData.add(new UserData(map));
                             }
                             observer.notifyOfCallback(userData);

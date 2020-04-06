@@ -1,4 +1,4 @@
-package com.example.bq.profiletest;
+package com.example.bq.datamanager;
 
 /**
  * Interface to implement the Observer pattern to handle Firebase Asynchonous callbacks when

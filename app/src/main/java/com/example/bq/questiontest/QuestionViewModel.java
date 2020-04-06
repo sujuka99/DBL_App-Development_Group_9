@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bq.datatypes.QuestionData;
-import com.example.bq.datatypes.QuestionResponseData;
-import com.example.bq.profiletest.DataManager;
-import com.example.bq.profiletest.FirebaseObserver;
+import com.example.bq.datamanager.DataManager;
+import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.QuestionData;
+import com.example.bq.datamanager.datatypes.QuestionResponseData;
 
 import java.util.ArrayList;
 import java.util.HashMap;

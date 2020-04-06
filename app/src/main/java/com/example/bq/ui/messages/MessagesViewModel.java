@@ -1,17 +1,14 @@
 package com.example.bq.ui.messages;
 
-import android.provider.ContactsContract;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bq.datatypes.UserData;
-import com.example.bq.profiletest.DataManager;
-import com.example.bq.profiletest.FirebaseObserver;
+import com.example.bq.datamanager.DataManager;
+import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.UserData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MessagesViewModel extends ViewModel {
@@ -23,11 +20,11 @@ public class MessagesViewModel extends ViewModel {
         userData.setValue(new ArrayList<UserData>());
     }
 
-    public void loadUsers(){
+    public void loadUsers() {
         DataManager.getInstance().getUsers(new FirebaseObserver() {
             @Override
             public void notifyOfCallback(Object obj) {
-                if(obj instanceof List){
+                if (obj instanceof List) {
                     userData.setValue((List<UserData>) obj);
                 }
             }

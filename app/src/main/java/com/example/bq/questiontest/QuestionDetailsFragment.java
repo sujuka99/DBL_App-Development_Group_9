@@ -22,9 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bq.MainActivity;
 import com.example.bq.R;
 import com.example.bq.booktest.TimeStamp;
-import com.example.bq.datatypes.QuestionData;
-import com.example.bq.datatypes.QuestionResponseData;
-import com.example.bq.profiletest.FirebaseObserver;
+import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.QuestionData;
+import com.example.bq.datamanager.datatypes.QuestionResponseData;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class QuestionDetails extends Fragment implements FirebaseObserver {
+public class QuestionDetailsFragment extends Fragment implements FirebaseObserver {
 
     private QuestionViewModel viewModel;
     private HomeFragment parent;
@@ -49,10 +49,10 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
     private Button deleteQuestion;
     private EditText message;
 
-    public static QuestionDetails newInstance(QuestionData data) {
+    public static QuestionDetailsFragment newInstance(QuestionData data) {
         Bundle args = new Bundle();
         args.putSerializable("data", data.toMap());
-        QuestionDetails f = new QuestionDetails();
+        QuestionDetailsFragment f = new QuestionDetailsFragment();
         f.setArguments(args);
         return f;
     }
@@ -94,13 +94,6 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
         description.setText(questionData.description == null ? "No description" : questionData.description);
         time.setText(TimeStamp.toTime(questionData.timeStamp));
 
-        author.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                parent.loadProfile(questionData.author.split("-")[1].trim());
-            }
-        });
-
         if (questionData.author.split("-")[1].trim().equalsIgnoreCase(FirebaseAuth.getInstance().getCurrentUser().getUid().trim())) {
             initDeleteButton(false);
         } else if (MainActivity.isAdmin) {
@@ -112,7 +105,7 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
         ImageButton respond = root.findViewById(R.id.btn_send);
         message = root.findViewById(R.id.text_send);
         final EditText message = root.findViewById(R.id.text_send);
-        final QuestionDetails fragment = this;
+        final QuestionDetailsFragment fragment = this;
         respond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +138,7 @@ public class QuestionDetails extends Fragment implements FirebaseObserver {
     private void initDeleteButton(boolean admin) {
         deleteQuestion.setVisibility(View.VISIBLE);
         deleteQuestion.setText(admin == true ? "Delete" : "Unregister");
-        final QuestionDetails fragment = this;
+        final QuestionDetailsFragment fragment = this;
         deleteQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

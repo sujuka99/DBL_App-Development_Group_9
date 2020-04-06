@@ -18,8 +18,8 @@
         <activity android:name=".MessageActivity"></activity>
         <activity android:name=".Questions" />
         <activity android:name=".Books" />
-        <activity android:name=".Register" />
-        <activity android:name=".Login">
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

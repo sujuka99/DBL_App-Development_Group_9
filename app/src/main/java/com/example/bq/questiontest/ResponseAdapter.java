@@ -1,11 +1,9 @@
 package com.example.bq.questiontest;
 
-import android.app.TaskInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
 import com.example.bq.booktest.TimeStamp;
-import com.example.bq.datatypes.QuestionResponseData;
+import com.example.bq.datamanager.datatypes.QuestionResponseData;
 
 import java.util.List;
 

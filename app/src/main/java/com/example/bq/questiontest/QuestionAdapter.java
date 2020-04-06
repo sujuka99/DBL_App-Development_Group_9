@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
 import com.example.bq.booktest.TimeStamp;
-import com.example.bq.datatypes.QuestionData;
+import com.example.bq.datamanager.datatypes.QuestionData;
 
 import java.util.List;
 

@@ -16,6 +16,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
         final EditTextPreference editTextPreference = findPreference("random_text");
 
+        assert editTextPreference != null;
         editTextPreference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
             @Override
             public void onBindEditText(@NonNull EditText editText) {

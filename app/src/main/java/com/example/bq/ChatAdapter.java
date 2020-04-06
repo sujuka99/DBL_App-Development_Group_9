@@ -1,26 +1,19 @@
 package com.example.bq;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.bq.ChatAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
@@ -43,12 +36,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @NonNull
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == MSG_TYPE_RIGHT){
+        if (viewType == MSG_TYPE_RIGHT) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right, parent, false);
-            return  new ChatAdapter.ViewHolder(view);
-        }else{
+            return new ChatAdapter.ViewHolder(view);
+        } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
-            return  new ChatAdapter.ViewHolder(view);
+            return new ChatAdapter.ViewHolder(view);
         }
     }
 
@@ -81,12 +74,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             show_message = itemView.findViewById(R.id.show_message);
         }
     }
+
     @Override
-    public int getItemViewType(int position){
+    public int getItemViewType(int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(mChat.get(position).getSender().equals(firebaseUser.getUid())){
+        if (mChat.get(position).getSender().equals(firebaseUser.getUid())) {
             return MSG_TYPE_RIGHT;
-        }else {
+        } else {
             return MSG_TYPE_LEFT;
         }
     }

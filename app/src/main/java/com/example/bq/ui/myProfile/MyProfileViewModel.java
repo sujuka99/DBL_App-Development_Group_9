@@ -1,15 +1,14 @@
 package com.example.bq.ui.myProfile;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bq.profiletest.DataManager;
-import com.example.bq.profiletest.FirebaseObserver;
-import com.example.bq.datatypes.UserData;
+import com.example.bq.datamanager.DataManager;
+import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.UserData;
 
 public class MyProfileViewModel extends ViewModel implements FirebaseObserver {
 

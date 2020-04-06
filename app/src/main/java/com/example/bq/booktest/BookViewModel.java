@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bq.MainActivity;
-import com.example.bq.datatypes.BookData;
-import com.example.bq.profiletest.DataManager;
-import com.example.bq.profiletest.FirebaseObserver;
+import com.example.bq.datamanager.datatypes.BookData;
+import com.example.bq.datamanager.DataManager;
+import com.example.bq.datamanager.FirebaseObserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
