@@ -32,12 +32,12 @@ public class LoginTest {
     public void beforeTests() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
-            ActivityScenario<Login> mLoginActivityScenario = ActivityScenario.launch(Login.class);
+            ActivityScenario<LoginActivity> mLoginActivityScenario = ActivityScenario.launch(LoginActivity.class);
         }
     }
 
     @Rule
-    public ActivityScenarioRule<Login> loginActivityScenarioRule = new ActivityScenarioRule<>(Login.class);
+    public ActivityScenarioRule<LoginActivity> loginActivityScenarioRule = new ActivityScenarioRule<>(LoginActivity.class);
 
     @Test
     public void test_isActivityInView() {
@@ -76,6 +76,9 @@ public class LoginTest {
         onView(withId(R.id.Email)).perform(typeText("test@test.test"));
         onView(withId(R.id.password)).perform(typeText("test123"));
 
+        //hide keyboard
+        pressBack();
+
         //click login
         onView(withId(R.id.loginBtn)).perform(click());
 
@@ -95,6 +98,9 @@ public class LoginTest {
         //enter login details
         onView(withId(R.id.Email)).perform(typeText("test@test.test"));
         onView(withId(R.id.password)).perform(typeText("wrong_password"));
+
+        //hide keyboard
+        pressBack();
 
         //click login
         onView(withId(R.id.loginBtn)).perform(click());

@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 public class RegisterTest {
 
     @Rule
-    public ActivityScenarioRule<Register> registerActivityScenarioRule = new ActivityScenarioRule<>(Register.class);
+    public ActivityScenarioRule<RegisterActivity> registerActivityScenarioRule = new ActivityScenarioRule<>(RegisterActivity.class);
 
     @Test
     public void test_isActivityInView() {
@@ -64,7 +64,7 @@ public class RegisterTest {
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
-            ActivityScenario<Register> mRegisterActivityScenario = ActivityScenario.launch(Register.class);
+            ActivityScenario<RegisterActivity> mRegisterActivityScenario = ActivityScenario.launch(RegisterActivity.class);
         }
 
         onView(withId(R.id.createText)).perform(click());
@@ -89,6 +89,9 @@ public class RegisterTest {
         onView(withId(R.id.Email)).perform(typeText(email));
         onView(withId(R.id.password)).perform(typeText("any_password"));
 
+        //hide keyboard
+        pressBack();
+
         //click register
         onView(withId(R.id.loginBtn)).perform(click());
 
@@ -101,6 +104,9 @@ public class RegisterTest {
 
         //check whether we reached the home page
         onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+
+        //sign out of temp account
+        FirebaseAuth.getInstance().signOut();
     }
 
     @Test
@@ -109,6 +115,9 @@ public class RegisterTest {
         onView(withId(R.id.fullName)).perform(typeText("Register Test"));
         onView(withId(R.id.Email)).perform(typeText("test@test.test")); //taken
         onView(withId(R.id.password)).perform(typeText("any_password"));
+
+        //hide keyboard
+        pressBack();
 
         //click register
         onView(withId(R.id.loginBtn)).perform(click());

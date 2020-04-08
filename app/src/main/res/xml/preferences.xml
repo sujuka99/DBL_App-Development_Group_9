@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="General">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings_screen"
+    android:key="settingsScreen">
+    <PreferenceCategory android:title="General" android:id="@+id/generalCategory">
 
         <SwitchPreference
             android:id="@+id/useLocation"
+            android:key="useLocation"
             android:defaultValue="true"
             android:summary="Whether to use location"
             android:title="Location" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Other settings">
+    <PreferenceCategory android:title="Other settings" android:id="@+id/otherCategory">
 
         <CheckBoxPreference
             android:id="@+id/randomCheck"
+            android:key="randomCheck"
             android:defaultValue="true"
             android:summary="This is a checkbox"
-            android:title="Checkbox"/>
+            android:title="Checkbox" />
 
         <EditTextPreference
             android:id="@+id/randomEdit"
             android:key="random_text"
             android:summary="Edit some text"
-            android:title="Edit Text"/>
+            android:title="Edit Text" />
 
     </PreferenceCategory>
 </PreferenceScreen>
