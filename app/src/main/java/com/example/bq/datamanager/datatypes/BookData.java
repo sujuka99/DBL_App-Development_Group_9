@@ -1,6 +1,8 @@
 package com.example.bq.datamanager.datatypes;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class BookData {
     public String title;
@@ -30,33 +32,23 @@ public class BookData {
 
     public HashMap<String, String> toMap() {
         HashMap<String, String> result = new HashMap<>();
-        if (id != null) {
-            result.put("id", id);
-        }
-        if (title != null) {
-            result.put("title", title);
-        }
-        if (study != null) {
-            result.put("study", study);
-        }
-        if (author != null) {
-            result.put("author", author);
-        }
-        if (price != null) {
-            result.put("price", price);
-        }
-        if (location != null) {
-            result.put("location", location);
-        }
-        if (description != null) {
-            result.put("description", description);
-        }
-        if (seller != null) {
-            result.put("seller", seller);
-        }
-        if (timeStamp != null) {
-            result.put("timeStamp", timeStamp);
-        }
+
+        // Add all our fields to the map
+        result.put("id", id);
+        result.put("title", title);
+        result.put("study", study);
+        result.put("author", author);
+        result.put("price", price);
+        result.put("location", location);
+        result.put("description", description);
+        result.put("seller", seller);
+        result.put("timeStamp", timeStamp);
+
+        // Now remove all keys that refer to null, as our fields could be null but we do not
+        // wish to retain keys that map to null.
+        // This allows for easier unit testing, as we now only have to test that
+        // For all keys, getValue != null;
+        result.values().removeAll(Collections.singleton(null));
         return result;
     }
 }
