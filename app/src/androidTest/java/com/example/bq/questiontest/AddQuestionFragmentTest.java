@@ -17,8 +17,8 @@ public class AddQuestionFragmentTest {
 
     @Before
     public void beforeTests() throws InterruptedException {
-        MainActivityTest.beforeTests();
-        QuestionFragmentTest.beforeTests();
+        MainActivityTest.navToHome();
+        QuestionFragmentTest.navToQuestions();
         onView(withId(R.id.button_create_question)).perform(click());
     }
 

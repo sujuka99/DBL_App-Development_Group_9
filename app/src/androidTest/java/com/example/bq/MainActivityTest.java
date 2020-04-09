@@ -29,7 +29,11 @@ public class MainActivityTest {
     int DRAWER_ANIMATION_TIMEOUT = 1000;
 
     @Before
-    public static void beforeTests() throws InterruptedException {
+    public void beforeTests() throws InterruptedException {
+        navToHome();
+    }
+
+    public static void navToHome() throws InterruptedException {
         ActivityScenario<LoginActivity> mLoginActivityScenario = ActivityScenario.launch(LoginActivity.class);
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             //enter login details
@@ -95,7 +99,7 @@ public class MainActivityTest {
         onView(withId(R.id.buttonBCS)).perform(click());
         onView(withId(R.id.popupBook)).perform(click());
         Thread.sleep(100);
-        onView(withId(R.id.book_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.books_layout)).check(matches(isDisplayed()));
     }
 
     @Test

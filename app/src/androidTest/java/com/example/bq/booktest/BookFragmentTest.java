@@ -30,8 +30,12 @@ import static org.junit.Assert.*;
 public class BookFragmentTest {
 
     @Before
-    public static void beforeTests() throws InterruptedException {
-        MainActivityTest.beforeTests();
+    public void beforeTests() throws InterruptedException {
+        navToBooks();
+    }
+
+    public static void navToBooks() throws InterruptedException {
+        MainActivityTest.navToHome();
 
         //open books fragment
         onView(withId(R.id.buttonBCS)).perform(click());

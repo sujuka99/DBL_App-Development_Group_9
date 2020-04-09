@@ -20,8 +20,8 @@ public class AddBookFragmentTest {
 
     @Before
     public void  BeforeTests() throws InterruptedException{
-        MainActivityTest.beforeTests();
-        BookFragmentTest.beforeTests();
+        MainActivityTest.navToHome();
+        BookFragmentTest.navToBooks();
         onView(withId(R.id.button_create_listing)).perform(click());
     }
 

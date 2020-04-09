@@ -27,7 +27,11 @@ public class QuestionFragmentTest {
 
     @Before
     public void beforeTests() throws InterruptedException {
-        MainActivityTest.beforeTests();
+        navToQuestions();
+    }
+
+    public static void navToQuestions() throws InterruptedException {
+        MainActivityTest.navToHome();
 
         //open books fragment
         onView(withId(R.id.buttonBCS)).perform(click());
@@ -58,7 +62,7 @@ public class QuestionFragmentTest {
         Thread.sleep(1000);
         try {
             onView(withId(R.id.recycle_questions)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-            onView(withId(R.id.question_layout)).check(matches(isDisplayed()));
+            onView(withId(R.id.questiondetails_layout)).check(matches(isDisplayed()));
         } catch (PerformException pe) {
             //no question in viewholder, assume the worst
             assertTrue(false);
