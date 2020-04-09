@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 public class BookFragmentTest {
 
     @Before
-    public void beforeTests() throws InterruptedException {
+    public static void beforeTests() throws InterruptedException {
         MainActivityTest.beforeTests();
 
         //open books fragment
