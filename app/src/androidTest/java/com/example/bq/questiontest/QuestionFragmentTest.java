@@ -1,8 +1,5 @@
-package com.example.bq.booktest;
+package com.example.bq.questiontest;
 
-import android.widget.ProgressBar;
-
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -21,13 +18,12 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
-import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class BookFragmentTest {
+public class QuestionFragmentTest {
 
     @Before
     public void beforeTests() throws InterruptedException {
@@ -35,45 +31,44 @@ public class BookFragmentTest {
 
         //open books fragment
         onView(withId(R.id.buttonBCS)).perform(click());
-        onView(withId(R.id.popupBook)).perform(click());
+        onView(withId(R.id.popupQuestion)).perform(click());
         Thread.sleep(100);
     }
 
     @Test
     public void test_isFragmentInView() {
-        onView(withId(R.id.book_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.questions_layout)).check(matches(isDisplayed()));
     }
 
     @Test
     public void test_visibilityOfLayoutElements() {
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
-        onView(withId(R.id.recycle_books)).check(matches(isDisplayed()));
-        onView(withId(R.id.button_create_listing)).check(matches(isDisplayed()));
-        onView(withId(R.id.booksProgress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.recycle_questions)).check(matches(isDisplayed()));
+        onView(withId(R.id.button_create_question)).check(matches(isDisplayed()));
     }
 
     //Should change when all text comes from strings.xml
     @Test
     public void test_properTextEntries() {
-        onView(withId(R.id.button_create_listing)).check(matches(withText("Register Book")));
+        onView(withId(R.id.button_create_question)).check(matches(withText("Create question")));
     }
 
     @Test
-    public void test_navBookDetailsFragment() throws InterruptedException {
+    public void test_navQuestionDetailsFragment() throws InterruptedException {
         Thread.sleep(1000);
         try {
-            onView(withId(R.id.recycle_books)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-            onView(withId(R.id.bookdetails_layout)).check(matches(isDisplayed()));
+            onView(withId(R.id.recycle_questions)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+            onView(withId(R.id.question_layout)).check(matches(isDisplayed()));
         } catch (PerformException pe) {
-            //no book in viewholder, assume the worst
+            //no question in viewholder, assume the worst
             assertTrue(false);
         }
     }
 
     @Test
     public void test_navAddBookFragment() {
-        onView(withId(R.id.button_create_listing)).perform(click());
-        onView(withId(R.id.addbook_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.button_create_question)).perform(click());
+        onView(withId(R.id.addquestion_layout)).check(matches(isDisplayed()));
     }
 
     @Test
