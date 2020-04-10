@@ -3,7 +3,7 @@
     android:id="@+id/popup_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#62def8">
+    android:background="#FFCBA9">
 
     <TextView
         android:id="@+id/popupText"
@@ -14,7 +14,9 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:text="This is a popup window."
-        android:textSize="22sp" />
+        android:textColor="#B95716"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/popupQuestion"
@@ -24,7 +26,9 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="3dp"
-        android:text="@string/popup_questions_button" />
+        android:text="@string/popup_questions_button"
+        android:textColor="#B95716"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/popupBook"
@@ -32,6 +36,8 @@
         android:layout_height="80dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
-        android:text="@string/popup_books_button" />
+        android:text="@string/popup_books_button"
+        android:textColor="#B95716"
+        android:textStyle="bold" />
 
 </RelativeLayout>
