@@ -47,7 +47,7 @@ public class MainActivityTest {
             onView(withId(R.id.loginBtn)).perform(click());
 
             //time for login
-            Thread.sleep(1000);
+            Thread.sleep(4000);
         }
     }
 

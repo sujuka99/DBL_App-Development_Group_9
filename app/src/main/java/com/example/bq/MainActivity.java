@@ -182,9 +182,6 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    // This code below makes the user logout when you press the settings button
-    // I still dont know how to link it to the actual logout button
-    // so I used the settings button since it does nothing jet
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
