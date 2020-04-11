@@ -36,8 +36,13 @@ public class MainActivityTest {
     public static void navToHome() throws InterruptedException {
         ActivityScenario<LoginActivity> mLoginActivityScenario = ActivityScenario.launch(LoginActivity.class);
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            //enter login details
+            //enter email
             onView(withId(R.id.Email)).perform(typeText("test@test.test"));
+
+            //hide keyboard
+            pressBack();
+
+            //enter password
             onView(withId(R.id.password)).perform(typeText("test123"));
 
             //hide keyboard
@@ -53,7 +58,7 @@ public class MainActivityTest {
 
     @Test
     public void test_isActivityInView() {
-        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.fragment_home_studies)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -162,10 +167,6 @@ public class MainActivityTest {
         //click on Settings
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(250, 1200);
         onView(withId(R.id.recycler_view)).check(matches(isDisplayed()));
-        //onView(withId(R.id.recycler_view))
-        //        .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText("Location")),
-        //                click()));
-
     }
 
     @Test
