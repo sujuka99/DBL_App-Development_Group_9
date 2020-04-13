@@ -31,7 +31,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.bq.datamanager.DataManager;
-import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.firebase.FirebaseFunction;
+import com.example.bq.datamanager.firebase.FirebaseObserver;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -55,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static Location userLocation;
 
-    public static String major;
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -79,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
         DataManager.getInstance().isAdmin(user.getUid(), new FirebaseObserver() {
             @Override
-            public void notifyOfCallback(Object obj) {
-                if (obj instanceof HashMap) {
-                    HashMap<String, Object> result = (HashMap<String, Object>) obj;
-                    if (result.get("action") == "isAdmin") {
-                        if ((boolean) result.get("result")) {
-                            isAdmin = true;
-                        }
+            public void notifyOfCallback(HashMap<String, Object> callback) {
+                if(callback.get("action").equals(FirebaseFunction.FUNCTION_IS_ADMIN)){
+                    HashMap<String, Object> response = (HashMap<String, Object>) callback.get("response");
+                    if((boolean) response.get("success")){
+                        isAdmin = (boolean) response.get("admin");
+                    }else{
+                        Toast.makeText(getApplicationContext(), (String) response.get("error"), LENGTH_SHORT).show();
                     }
                 }
             }
@@ -243,13 +242,17 @@ public class MainActivity extends AppCompatActivity {
 
                 DataManager.getInstance().banUser(email.getText().toString(), new FirebaseObserver() {
                     @Override
-                    public void notifyOfCallback(Object obj) {
-                        if((boolean) obj){
-                            Toast.makeText(getApplicationContext(), "Banned the user", LENGTH_SHORT).show();
-                            popupWindow.dismiss();
-                            return;
+                    public void notifyOfCallback(HashMap<String, Object> callback) {
+                        if(callback.get("action").equals(FirebaseFunction.FUNCTION_BAN_USER)){
+                            HashMap<String, Object> response = (HashMap<String, Object>) callback.get("response");
+                            if((boolean) response.get("success")){
+                                Toast.makeText(getApplicationContext(), "Banned the user", LENGTH_SHORT).show();
+                                popupWindow.dismiss();
+                            }else{
+                                Toast.makeText(getApplicationContext(), (String) response.get("error"), LENGTH_SHORT).show();
+                            }
+
                         }
-                        Toast.makeText(getApplicationContext(), "User does not exist!", LENGTH_SHORT).show();
                     }
                 });
             }

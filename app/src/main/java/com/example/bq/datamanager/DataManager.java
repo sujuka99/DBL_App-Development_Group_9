@@ -1,422 +1,268 @@
 package com.example.bq.datamanager;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.bq.datamanager.datatypes.BookData;
 import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.datamanager.datatypes.QuestionResponseData;
 import com.example.bq.datamanager.datatypes.UserData;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.bq.datamanager.firebase.FirebaseFunction;
+import com.example.bq.datamanager.firebase.FirebaseObserver;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 
 public class DataManager {
 
     private static DataManager instance;
 
-    private FirebaseFunctions functions;
+    private final String DEFAULT_IMAGE_PATH = "default/default.jpg";
 
+    private final FirebaseFunctions functions;
+    private final StorageReference ref;
+
+    // Create a new DataManager singleton
     private DataManager() {
         functions = FirebaseFunctions.getInstance();
+        ref = FirebaseStorage.getInstance().getReference();
     }
 
     /**
-     * Attempt ton download the profile picture data of the desired user and send it to the observer
+     * Get the download uri of an image from storage <br>
+     * Will give a Uri object as callback to the observer object
      *
-     * @param id       - ID of the desired user
-     * @param observer - The {@link FirebaseObserver} object that will handle the callback
+     * @param path     The location of the image to be downloaded
+     * @param observer The {@link FirebaseObserver} object that will handle the callback
      */
-    public void loadProfilePicture(final String id, final FirebaseObserver observer) {
-        StorageReference ref = FirebaseStorage.getInstance().getReference();
+    public void downloadImageFromStorage(String path, final FirebaseObserver observer) {
+        // Get the storage reference located at path
+        StorageReference storageRef = ref.child(path);
 
-        // Get the storage reference of the user it's profile picture
-        // Which is stored as "users/<ID>/profile.jpg"
-        StorageReference storageRef = ref.child("users/" + id + "/profile.jpg");
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-        // Attempt to download the image and get the bytes
-        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        // Tell firebase we want a Uri that we can use in Glide
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(byte[] bytes) {
-                // If the image was found, convert the result into a Bitmap
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                // Send the Bitmap to the observer
-                observer.notifyOfCallback(bmp);
+            public void onSuccess(Uri uri) {
+                HashMap<String, Object> callback = new HashMap<>();
+                callback.put("uri", uri);
+                observer.notifyOfCallback(callback);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
-                // If the image was not found/something was wrong, we attempt to load the default
-                // profile picture
-                loadDefaultPicture(observer);
+            public void onFailure(@NonNull Exception e) {
+                // If we cannot find an image at that path, try to get the default image Uri
+                StorageReference storageRef = ref.child(DEFAULT_IMAGE_PATH);
+
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(@NonNull Uri uri) {
+                        // If we are successful, return the default image
+                        HashMap<String, Object> callback = new HashMap<>();
+                        callback.put("uri", uri);
+                        observer.notifyOfCallback(callback);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // If we fail, something is wrong and we cannot do anything about it
+                        // return an empty Uri
+                        HashMap<String, Object> callback = new HashMap<>();
+                        callback.put("uri", Uri.EMPTY);
+                        observer.notifyOfCallback(callback);
+                        e.printStackTrace();
+                    }
+                });
             }
         });
     }
 
     /**
-     * Download the default profile picture and send the data to the observer
+     * Upload a image to the firebase storage
      *
-     * @param observer - The {@link FirebaseObserver} object that will handle the callback
+     * @param path   - The location of where the image has to be stored
+     * @param bitmap - The bitmap to be uploaded to the server
      */
-    private void loadDefaultPicture(final FirebaseObserver observer) {
-        StorageReference ref = FirebaseStorage.getInstance().getReference();
+    public void uploadImageToStorage(@NonNull String path, @NonNull Bitmap bitmap) {
+        StorageReference storageRef = ref.child(path);
 
-        // Get the storage reference of the default profile picture
-        // Which is stored as "default/profile.jpg"
-        StorageReference storageRef = ref.child("default/profile.jpg");
+        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getWidth() * bitmap.getHeight());
+        bitmap.copyPixelsToBuffer(buffer);
 
-        final long ONE_MEGABYTE = 1024 * 1024;
-        // Attempt to download the image and get the bytes
-        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                // If the image was found, convert the result into a Bitmap
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        storageRef.putBytes(buffer.array());
 
-                // Send the Bitmap to the observer
-                observer.notifyOfCallback(bmp);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // If failed, something went wrong and there isn't really much
-                // we can do...
-                Log.d("getDefaultProfilePicture: ", "Failed due to an: " +
-                        exception.getMessage());
-                exception.printStackTrace();
-            }
-        });
+        buffer.clear();
     }
 
     /**
-     * Upload a profile picture to the firebase storage for a user
+     * Create a user reference in the database containing the minimal required data
      *
-     * @param id   - The ID of the desired user
-     * @param path - The Uri pointer to the picture to be uploaded
+     * @param id       ID of the user, generated by FirebaseAuth
+     * @param fullName The fullName that was specified when the account was registered
      */
-    public void setProfilePicture(@NonNull String id, @NonNull Uri path) {
-        StorageReference ref = FirebaseStorage.getInstance().getReference();
-        StorageReference storageRef = ref.child("users/" + id + "/profile.jpg");
-
-        storageRef.putFile(path).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.d("setProfilePicture: ", "Failed due to an: " +
-                        exception.getMessage());
-                exception.printStackTrace();
-            }
-        });
-    }
-
-    public void createUserInDatabase(String id, String fullName) {
+    public void createUserInDatabase(@NonNull String id, @NonNull String fullName) {
+        // First we create a new UserData object
         UserData data = new UserData();
-
+        // Set the fields with the data we have
         data.id = id;
         data.fullName = fullName;
 
-        FirebaseFunctions functions = FirebaseFunctions.getInstance();
-        functions.getHttpsCallable("addUser").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                Object resultData = task.getResult().getData();
-            }
-        });
+        // And then we call the function that will create our user reference in the database
+        // using our data, which we convert into a HashMap first
+        // We do not expect a callback, therefore we let the observer field be null
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_CREATE_USER, data.toMap(), null);
     }
 
+    /**
+     * Get userdata of the specified user from the database
+     *
+     * @param id       ID of the user of which we want the data
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void getUserFromDatabase(String id, final FirebaseObserver observer) {
-        functions.getHttpsCallable("getUser").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                // Result data is a HashMap with success boolean and result a new HashMap<String, Object>
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    HashMap<String, Object> result = (HashMap<String, Object>) response.get("result");
-                    UserData data;
-                    if (result == null) {
-                        data = new UserData();
-                    } else {
-                        data = new UserData(result);
-                    }
-                    observer.notifyOfCallback(data);
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_GET_USER, id, observer);
     }
 
+    /**
+     * Check if the specified user is registered as an administrator
+     *
+     * @param id       ID of the user of which we want the admin status
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void isAdmin(String id, final FirebaseObserver observer) {
-        functions.getHttpsCallable("isAdmin").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    HashMap<String, Object> result = new HashMap<>();
-                    result.put("action", "isAdmin");
-                    result.put("result", response.get("admin"));
-                    observer.notifyOfCallback(result);
-                } else {
-                    Log.d("isAdmin", response.get("error") + "");
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_IS_ADMIN, id, observer);
     }
 
-    public void isBanned(String id, final FirebaseObserver observer) {
-        functions.getHttpsCallable("isBanned").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    boolean result = (boolean) response.get("admin");
-                    observer.notifyOfCallback(result);
-                }
-            }
-        });
-    }
-
+    /**
+     * Get userdata of the specified user from the database
+     *
+     * @param email    Email of the user of which we want to ban the account
+     * @param observer A {@link FirebaseObserver} object to handle the query callback
+     */
     public void banUser(String email, final FirebaseObserver observer) {
-        functions.getHttpsCallable("banUser").call(email).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    if (response.containsKey("error")) {
-                        Log.d("Yeah...", "this is always true and the error is " + response.get("error"));
-                    }
-                    observer.notifyOfCallback(true);
-                } else {
-                    if (response.containsKey("error")) {
-                        Log.d("Works fine?", "" + response.get("error"));
-                    }
-                    observer.notifyOfCallback(false);
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_BAN_USER, email, observer);
     }
 
-    public void unbanUser(String banID, final FirebaseObserver observer) {
-        functions.getHttpsCallable("unbanUser").call(banID).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    observer.notifyOfCallback(true);
-                } else {
-                    observer.notifyOfCallback(false);
-                }
-            }
-        });
-    }
-
-    public void viewBannedUsers(int page, final FirebaseObserver observer) {
-        functions.getHttpsCallable("viewBannedUsers").call(page).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    Log.d("ViewBannedUsers result", response.get("result").getClass().toString());
-                    List<Object> result = (List<Object>) response.get("result");
-                    Log.d("ViewBannedUsers listResult", result.toString());
-                }
-            }
-        });
-    }
-
-    public void getBooks(String study, int page, Location loc, final FirebaseObserver observer) {
+    /**
+     * Get a list of books for the specified study from the database
+     *
+     * @param study    Name of the study for which we want all the books from the database
+     * @param loc      Location of the user browsing the books, in order to order the books by distance
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
+    public void getBooks(String study, @Nullable Location loc, final FirebaseObserver observer) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("study", study);
-        data.put("page", page);
-        data.put("location", loc.getLatitude() + ":" + loc.getLongitude());
+        if (loc != null) {
+            data.put("location", loc.getLatitude() + ":" + loc.getLongitude());
+        }
 
-        functions.getHttpsCallable("getBooks").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                if (task.getResult().getData() != null) {
-                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                    if ((boolean) response.get("success")) {
-                        List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
-                        List<BookData> callBack = new ArrayList<>();
-                        for (HashMap<String, String> book : result) {
-                            callBack.add(new BookData(book));
-                        }
-                        observer.notifyOfCallback(callBack);
-                    }
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_GET_BOOKS, data, observer);
     }
 
+    /**
+     * Add a book to the database
+     *
+     * @param data     {@link BookData} object containing all the data of the book to be added
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void addBook(BookData data, final FirebaseObserver observer) {
-        functions.getHttpsCallable("addBook").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    observer.notifyOfCallback(true);
-                } else {
-                    observer.notifyOfCallback(false);
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_ADD_BOOK, data.toMap(), observer);
     }
 
+    /**
+     * Delete a book from the database
+     *
+     * @param study    Name of the study under which the book is listed
+     * @param id       ID of the user of which we want the data
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void deleteBook(String study, String id, final FirebaseObserver observer) {
         HashMap<String, String> data = new HashMap<>();
 
         data.put("study", study);
         data.put("id", id);
 
-        functions.getHttpsCallable("deleteBook").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    observer.notifyOfCallback(true);
-                } else {
-                    observer.notifyOfCallback(false);
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_DELETE_BOOK, data, observer);
     }
 
-    public void getQuestions(String study, int page, String query, final FirebaseObserver observer) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("study", study);
-        data.put("page", page);
-        data.put("query", query);
-
-        functions.getHttpsCallable("getQuestions").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                if (task.getResult().getData() != null) {
-                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                    if ((boolean) response.get("success")) {
-                        List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
-                        List<QuestionData> callBack = new ArrayList<>();
-                        for (HashMap<String, String> question : result) {
-                            callBack.add(new QuestionData(question));
-                        }
-                        observer.notifyOfCallback(callBack);
-                    }
-                }
-            }
-        });
+    /**
+     * Get questions from the database for the specified study
+     *
+     * @param study    Name of the study under which the question is listed
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
+    public void getQuestions(String study, final FirebaseObserver observer) {
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_GET_QUESTIONS, study, observer);
     }
 
+    /**
+     * Add a question to the database
+     *
+     * @param data     {@link QuestionData} object containing all the data of the question to be added
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void addQuestion(QuestionData data, final FirebaseObserver observer) {
-        functions.getHttpsCallable("addQuestion").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    observer.notifyOfCallback(true);
-                } else {
-                    observer.notifyOfCallback(false);
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_ADD_QUESTION, data.toMap(), observer);
     }
 
+    /**
+     * Delete a question from the database
+     *
+     * @param id       ID of the question to be deleted
+     * @param study    Name of the study under which the question is listed
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void deleteQuestion(String study, String id, final FirebaseObserver observer) {
         HashMap<String, String> data = new HashMap<>();
         data.put("study", study);
         data.put("id", id);
 
-        functions.getHttpsCallable("deleteQuestion").call(data).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                if ((boolean) response.get("success")) {
-                    observer.notifyOfCallback(true);
-                } else {
-                    observer.notifyOfCallback(false);
-                    Log.d("Delete Question", (String) response.get("error"));
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_DELETE_QUESTION, data, observer);
     }
 
+    /**
+     * Get a list of all responses to a question
+     *
+     * @param id       ID of the question of which we want the responses
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void getQuestionResponses(String id, final FirebaseObserver observer) {
-        Log.d("GetQuestionResponses", "QUESTION ID: " + id);
-        functions.getHttpsCallable("messageUser").call(id).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                if (task.getResult().getData() != null) {
-                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                    if ((boolean) response.get("success")) {
-                        List<HashMap<String, String>> result = (List<HashMap<String, String>>) response.get("result");
-                        List<QuestionResponseData> callBack = new ArrayList<>();
-                        for (HashMap<String, String> question : result) {
-                            callBack.add(new QuestionResponseData(question));
-                        }
-                        observer.notifyOfCallback(callBack);
-                    }
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_GET_RESPONSES, id, observer);
     }
 
+    /**
+     * Add a response to a question to the database
+     *
+     * @param data     {@link QuestionResponseData} object containing all the data of the response to be added
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void respondToQuestion(QuestionResponseData data, final FirebaseObserver observer) {
-        functions.getHttpsCallable("viewBannedUsers").call(data.toMap()).addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                if (task.getResult().getData() != null) {
-                    HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-                    if ((boolean) response.get("success")) {
-                        observer.notifyOfCallback(true);
-                    } else {
-                        observer.notifyOfCallback(false);
-                    }
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_RESPOND_QUESTION, data.toMap(), observer);
     }
 
+    /**
+     * Get a list of all users from the database. <br>
+     * If the user is not an admin, banned accounts will not show up in that list
+     *
+     * @param observer A {@link FirebaseObserver} object to handle the callback
+     */
     public void getUsers(final FirebaseObserver observer) {
-        functions.getHttpsCallable("hello").call().addOnCompleteListener(new OnCompleteListener<HttpsCallableResult>() {
-            @Override
-            public void onComplete(@NonNull Task<HttpsCallableResult> task) {
-                HashMap<String, Object> response = (HashMap<String, Object>) task.getResult().getData();
-
-                if (response != null) {
-                    if ((boolean) response.get("success")) {
-                        Object result = response.get("result");
-                        if (result instanceof ArrayList) {
-                            ArrayList<HashMap<String, Object>> resultList = (ArrayList<HashMap<String, Object>>) result;
-                            Log.d("Result", resultList.toString());
-                            List<UserData> userData = new ArrayList<>();
-                            for (HashMap<String, Object> map : resultList) {
-                                userData.add(new UserData(map));
-                            }
-                            observer.notifyOfCallback(userData);
-                        }
-                    }
-                }
-            }
-        });
+        FirebaseFunction.call(FirebaseFunction.FUNCTION_GET_USERLIST, "", observer);
     }
 
+    /**
+     * Obtain a reference to the DataManager singleton instance
+     * @return The singleton instance of DataManager
+     */
     public static DataManager getInstance() {
         return instance == null ? (instance = new DataManager()) : instance;
     }

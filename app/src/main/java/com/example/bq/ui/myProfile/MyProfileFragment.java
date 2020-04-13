@@ -1,6 +1,8 @@
 package com.example.bq.ui.myProfile;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
 import com.example.bq.R;
 import com.example.bq.datamanager.datatypes.UserData;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +37,7 @@ public class MyProfileFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // First we initialize the ViewModel of this fragment
-        viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MyProfileViewModel.class);
 
         // Then we load in our layout
         View root = inflater.inflate(R.layout.fragment_myprofile, container, false);
@@ -55,7 +60,7 @@ public class MyProfileFragment extends Fragment {
      *
      * @param data - The {@link UserData} that will be used to update the profile
      */
-    public void updateProfile(UserData data) {
+    private void updateProfile(UserData data) {
         fullName.setText(data.fullName == null ? "No Name" : data.fullName);
         university.setText(data.university == null ? "No University" : data.university);
         study.setText(data.study == null ? "No Study" : data.study);
@@ -67,7 +72,7 @@ public class MyProfileFragment extends Fragment {
      *
      * @param root - The {@link View} in which the components can be found
      */
-    public void initializeComponents(View root) {
+    private void initializeComponents(View root) {
         fullName = root.findViewById(R.id.fullName);
         university = root.findViewById(R.id.university);
         study = root.findViewById(R.id.study);
@@ -81,9 +86,10 @@ public class MyProfileFragment extends Fragment {
      *
      * @param id
      */
-    public void loadDataInVM(String id) {
+    private void loadDataInVM(String id) {
         viewModel.loadUser(id);
 
+        final Context context = getContext();
         final Observer<UserData> userDataObserver = new Observer<UserData>() {
             @Override
             public void onChanged(final UserData data) {
@@ -92,14 +98,14 @@ public class MyProfileFragment extends Fragment {
             }
         };
 
-        final Observer<Bitmap> profilePictureObserver = new Observer<Bitmap>() {
+        final Observer<Uri> profilePictureObserver = new Observer<Uri>() {
             @Override
-            public void onChanged(final Bitmap bmp) {
-                profilePicture.setImageBitmap(bmp);
+            public void onChanged(final Uri uri) {
+                Glide.with(context).asBitmap().load(uri).into(profilePicture);
             }
         };
 
-        viewModel.getUserData().observe(this, userDataObserver);
-        viewModel.getProfilePicture().observe(this, profilePictureObserver);
+        viewModel.getUserData().observe(getViewLifecycleOwner(), userDataObserver);
+        viewModel.getProfilePicture().observe(getViewLifecycleOwner(), profilePictureObserver);
     }
 }

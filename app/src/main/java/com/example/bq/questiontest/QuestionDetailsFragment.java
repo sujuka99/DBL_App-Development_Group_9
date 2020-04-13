@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bq.MainActivity;
 import com.example.bq.R;
 import com.example.bq.booktest.TimeStamp;
-import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.ViewModelCaller;
 import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.datamanager.datatypes.QuestionResponseData;
 import com.example.bq.ui.home.HomeFragment;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class QuestionDetailsFragment extends Fragment implements FirebaseObserver {
+public class QuestionDetailsFragment extends Fragment {
 
     private QuestionViewModel viewModel;
     private HomeFragment parent;
@@ -47,8 +47,13 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
     private ResponseAdapter adapter;
 
     private Button deleteQuestion;
-    private EditText message;
 
+    /**
+     * Create a new QuestionDetailsFragment with a reference to the desired QuestionData
+     *
+     * @param data The QuestionData object the Fragment will display
+     * @return A new instance of QuestionDetailsFragment with data as extra data
+     */
     public static QuestionDetailsFragment newInstance(QuestionData data) {
         Bundle args = new Bundle();
         args.putSerializable("data", data.toMap());
@@ -62,7 +67,7 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_questiondetails, container, false);
 
-        viewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+        viewModel = new ViewModelProvider(this).get(QuestionViewModel.class);
         parent = (HomeFragment) getParentFragment();
 
         try {
@@ -80,7 +85,12 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
         return root;
     }
 
-    public void initComponents(View root) {
+    /**
+     * Initialize all detail components in the layout
+     *
+     * @param root Root view in which the components can be found
+     */
+    private void initComponents(View root) {
 
         TextView title = root.findViewById(R.id.questionDetailTitle);
         TextView author = root.findViewById(R.id.questionDetailAuthor);
@@ -101,9 +111,13 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
         }
     }
 
-    public void initResponse(View root) {
+    /**
+     * Initialize all components that have functionality regarding responding to the question
+     *
+     * @param root Root view in which the components can be found
+     */
+    private void initResponse(View root) {
         ImageButton respond = root.findViewById(R.id.btn_send);
-        message = root.findViewById(R.id.text_send);
         final EditText message = root.findViewById(R.id.text_send);
         final QuestionDetailsFragment fragment = this;
         respond.setOnClickListener(new View.OnClickListener() {
@@ -122,11 +136,27 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
                 data.body = message.getText().toString();
                 data.id = UUID.randomUUID().toString().replaceAll("-", "");
 
-                viewModel.respondToQuestion(data, fragment);
+                viewModel.respondToQuestion(data, new ViewModelCaller() {
+                    @Override
+                    public void callback(Object obj) {
+                        if (obj instanceof String) {
+                            Toast.makeText(getActivity().getApplicationContext(), (String) obj, Toast.LENGTH_SHORT).show();
+                        } else if ((boolean) obj) {
+                            Toast.makeText(getActivity().getApplicationContext(), "Successfully responded!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                });
+                message.setText("");
             }
         });
     }
 
+    /**
+     * Initialize the recycle view to display all responses
+     *
+     * @param root Root view in which the recycler view can be found
+     */
     private void initRecycleView(View root) {
         RecyclerView recyclerView = root.findViewById(R.id.question_responses);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -135,43 +165,47 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+    /**
+     * Initialize the delete/unregister button
+     *
+     * @param admin Whether the user has admin privileges for this question
+     */
     private void initDeleteButton(boolean admin) {
         deleteQuestion.setVisibility(View.VISIBLE);
-        deleteQuestion.setText(admin == true ? "Delete" : "Unregister");
-        final QuestionDetailsFragment fragment = this;
+        deleteQuestion.setText(admin ? "Delete" : "Unregister");
         deleteQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.deleteQuestion(questionData, fragment);
+                viewModel.deleteQuestion(questionData, new ViewModelCaller() {
+                    @Override
+                    public void callback(Object obj) {
+                        if (obj instanceof String) {
+                            Toast.makeText(getActivity().getApplicationContext(), (String) obj, Toast.LENGTH_SHORT).show();
+                        } else if ((boolean) obj) {
+                            Toast.makeText(getActivity().getApplicationContext(), "Successfully removed the question!", Toast.LENGTH_SHORT).show();
+                            parent.getChildFragmentManager().popBackStackImmediate();
+                        }
+                    }
+                });
             }
         });
     }
 
-    @Override
-    public void notifyOfCallback(Object obj) {
-        if (obj instanceof HashMap) {
-            HashMap<String, Object> result = (HashMap<String, Object>) obj;
-            if (result.get("action") == "removeQuestion") {
-                if ((boolean) result.get("result")) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully removed the question!", Toast.LENGTH_SHORT).show();
-                    HomeFragment parent = (HomeFragment) getParentFragment();
-                    parent.getChildFragmentManager().popBackStackImmediate();
-                    return;
-                }
-                Toast.makeText(getActivity().getApplicationContext(), "Could not remove the question!", Toast.LENGTH_SHORT).show();
-            } else if (result.get("action") == "respondToQuestion") {
-                if ((boolean) result.get("result")) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully responded!", Toast.LENGTH_SHORT).show();
-                    message.setText("");
-                    return;
-                }
-                Toast.makeText(getActivity().getApplicationContext(), "Could not respond!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
+    /**
+     * Load all question responses into the view model, which will trigger an observe function to
+     * which we will display all responses in the recycler view
+     */
     private void loadDataInVM() {
-        viewModel.loadResponsesIntoVM(questionData.id);
+        viewModel.loadResponsesIntoVM(questionData.id, new ViewModelCaller() {
+            @Override
+            public void callback(Object obj) {
+                if (obj instanceof String) {
+                    Toast.makeText(getActivity().getApplicationContext(), (String) obj, Toast.LENGTH_SHORT).show();
+                } else if ((boolean) obj) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Loaded responses", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         final Observer<List<QuestionResponseData>> questionResponseObserver = new Observer<List<QuestionResponseData>>() {
             @Override
@@ -182,6 +216,6 @@ public class QuestionDetailsFragment extends Fragment implements FirebaseObserve
             }
         };
 
-        viewModel.getResponses().observe(this, questionResponseObserver);
+        viewModel.getResponses().observe(getViewLifecycleOwner(), questionResponseObserver);
     }
 }

@@ -13,19 +13,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.bq.MainActivity;
 import com.example.bq.R;
+import com.example.bq.datamanager.ViewModelCaller;
 import com.example.bq.datamanager.datatypes.BookData;
-import com.example.bq.datamanager.FirebaseObserver;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
 
-public class BookDetailsFragment extends Fragment implements FirebaseObserver {
+public class BookDetailsFragment extends Fragment {
 
     private BookData bookData;
 
@@ -48,7 +48,7 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bookdetails, container, false);
 
-        viewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+        viewModel = new ViewModelProvider(this).get(BookViewModel.class);
 
         parent = (HomeFragment) getParentFragment();
 
@@ -65,7 +65,7 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
         return root;
     }
 
-    public void initComponents(View root) {
+    private void initComponents(View root) {
         Glide.with(getContext()).asBitmap().load("https://upload.wikimedia.org/wikipedia/commons/" +
                 "thumb" +
                 "/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png")
@@ -106,33 +106,24 @@ public class BookDetailsFragment extends Fragment implements FirebaseObserver {
     private void initDeleteButton(boolean admin) {
         deleteBook.setVisibility(View.VISIBLE);
         deleteBook.setText(admin ? "Delete" : "Unregister");
-        final BookDetailsFragment fragment = this;
         deleteBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.removeBook(bookData, fragment);
+                viewModel.removeBook(bookData, new ViewModelCaller() {
+                    @Override
+                    public void callback(Object obj) {
+                        if (obj instanceof String) {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    (String) obj, Toast.LENGTH_SHORT).show();
+
+                        } else if ((boolean) obj) {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Successfully removed the book!", Toast.LENGTH_SHORT).show();
+                            parent.getChildFragmentManager().popBackStackImmediate();
+                        }
+                    }
+                });
             }
         });
-    }
-
-    @Override
-    public void notifyOfCallback(Object obj) {
-        if (obj instanceof HashMap) {
-            HashMap<String, Object> result = (HashMap<String, Object>) obj;
-            if (result.get("action") == "removeBook") {
-                if ((boolean) result.get("result")) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Successfully removed the book!", Toast.LENGTH_SHORT).show();
-                    parent.getChildFragmentManager().popBackStackImmediate();
-                    return;
-                }
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Could not remove the book!", Toast.LENGTH_SHORT).show();
-            } else if (result.get("action") == "isAdmin") {
-                if ((boolean) result.get("result")) {
-                    initDeleteButton(true);
-                }
-            }
-        }
     }
 }

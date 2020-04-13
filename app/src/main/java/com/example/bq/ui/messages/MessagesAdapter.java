@@ -22,12 +22,11 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessagesViewHolder> {
-    private String defaultLink = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png";
 
     private List<UserData> userData;
-    Context messageContext;
+    private Context messageContext;
 
-    public MessagesAdapter(List<UserData> userData, Context messageContext) {
+    MessagesAdapter(List<UserData> userData, Context messageContext) {
         this.userData = userData;
         this.messageContext = messageContext;
     }
@@ -42,6 +41,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.MessagesViewHolder holder, final int position) {
 
+        String defaultLink = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/1200px-Question_mark_alternate.svg.png";
         Glide.with(messageContext)
                 .asBitmap()
                 .load(defaultLink)
@@ -74,7 +74,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         return userData.size();
     }
 
-    public class MessagesViewHolder extends RecyclerView.ViewHolder {
+    static class MessagesViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profilePicture;
         TextView fullName;
@@ -82,7 +82,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         TextView messageTime;
         ConstraintLayout messageLayout;
 
-        public MessagesViewHolder(@NonNull View itemView) {
+        MessagesViewHolder(@NonNull View itemView) {
             super(itemView);
             profilePicture = itemView.findViewById(R.id.message_picture);
             fullName = itemView.findViewById(R.id.message_username);

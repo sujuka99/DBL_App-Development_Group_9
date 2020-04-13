@@ -26,11 +26,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bq.MainActivity;
 import com.example.bq.R;
-import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.ViewModelCaller;
 import com.example.bq.datamanager.datatypes.BookData;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +41,7 @@ import java.util.UUID;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class AddBookFragment extends Fragment implements FirebaseObserver {
+public class AddBookFragment extends Fragment {
 
     private final int TAKE_IMAGE = 0;
     private final int PICK_IMAGE = 1;
@@ -59,7 +59,7 @@ public class AddBookFragment extends Fragment implements FirebaseObserver {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_addbook, container, false);
-        viewModel = ViewModelProviders.of(this).get(BookViewModel.class);
+        viewModel = new ViewModelProvider(this).get(BookViewModel.class);
 
         initializeComponents(root);
 
@@ -203,23 +203,24 @@ public class AddBookFragment extends Fragment implements FirebaseObserver {
         Location loc = MainActivity.userLocation;
         data.location = loc.getLatitude() + ":" + loc.getLongitude();
         data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
+        data.description = bookDescription.getText().toString();
 
-        viewModel.addBook(data, this);
-    }
+        viewModel.addBook(data, new ViewModelCaller() {
+            @Override
+            public void callback(Object obj) {
+                assert (getActivity() != null);
+                Context appContext = getActivity().getApplicationContext();
+                assert (appContext != null);
 
-    @Override
-    public void notifyOfCallback(Object obj) {
-        assert (getActivity() != null);
-        Context appContext = getActivity().getApplicationContext();
-        assert (appContext != null);
-
-        if ((boolean) obj) {
-            Toast.makeText(appContext, R.string.MessageSuccessAddBook, Toast.LENGTH_SHORT).show();
-            HomeFragment parent = (HomeFragment) getParentFragment();
-            assert (parent != null);
-            parent.getChildFragmentManager().popBackStackImmediate();
-        } else {
-            Toast.makeText(appContext, R.string.MessageNoSuccessAddBook, Toast.LENGTH_SHORT).show();
-        }
+                if (obj instanceof String) {
+                    Toast.makeText(appContext, (String) obj, Toast.LENGTH_SHORT).show();
+                } else if ((boolean) obj) {
+                    Toast.makeText(appContext, R.string.MessageSuccessAddBook, Toast.LENGTH_SHORT).show();
+                    HomeFragment parent = (HomeFragment) getParentFragment();
+                    assert (parent != null);
+                    parent.getChildFragmentManager().popBackStackImmediate();
+                }
+            }
+        });
     }
 }

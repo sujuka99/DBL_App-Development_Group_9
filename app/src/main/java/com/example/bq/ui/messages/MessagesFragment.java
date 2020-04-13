@@ -10,24 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bq.R;
 import com.example.bq.datamanager.datatypes.UserData;
-import com.example.bq.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesFragment extends Fragment {
 
-    //private static final String TAG = "MessagesFragment";
-
     private MessagesViewModel viewModel;
-    private HomeFragment parent;
     private MessagesAdapter adapter;
 
     private List<UserData> userData = new ArrayList<>();
@@ -39,7 +35,7 @@ public class MessagesFragment extends Fragment {
         final TextView textView = root.findViewById(R.id.text_messages);
         textView.setText("My Messages");
 
-        viewModel = ViewModelProviders.of(this).get(MessagesViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MessagesViewModel.class);
 
         loadDataInVM();
         initRecycleView(root);
@@ -60,7 +56,7 @@ public class MessagesFragment extends Fragment {
             }
         };
 
-        viewModel.getUserData().observe(this, userDataObserver);
+        viewModel.getUserData().observe(getViewLifecycleOwner(), userDataObserver);
     }
 
     private void initRecycleView(View root) {

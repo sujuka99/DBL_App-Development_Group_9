@@ -1,7 +1,9 @@
-package com.example.bq.datamanager;
+package com.example.bq.datamanager.firebase;
+
+import java.util.HashMap;
 
 /**
- * Interface to implement the Observer pattern to handle Firebase Asynchonous callbacks when
+ * Interface to implement the Observer pattern to handle Firebase Asynchronous callbacks when
  * downloading/uploading data from/to the Firebase server
  */
 public interface FirebaseObserver {
@@ -11,5 +13,5 @@ public interface FirebaseObserver {
      *
      * @param obj - The object returned by the callback
      */
-    void notifyOfCallback(Object obj);
+    void notifyOfCallback(HashMap<String, Object> obj);
 }

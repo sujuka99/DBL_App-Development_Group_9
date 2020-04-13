@@ -12,10 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
-import com.example.bq.datamanager.FirebaseObserver;
+import com.example.bq.datamanager.ViewModelCaller;
+import com.example.bq.datamanager.firebase.FirebaseObserver;
 import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.UUID;
 
-public class AddQuestionFragment extends Fragment implements FirebaseObserver {
+public class AddQuestionFragment extends Fragment {
 
     private EditText questionTitle;
     private EditText questionDescription;
@@ -34,7 +36,7 @@ public class AddQuestionFragment extends Fragment implements FirebaseObserver {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_addquestion, container, false);
-        viewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+        viewModel = new ViewModelProvider(this).get(QuestionViewModel.class);
 
         initializeComponents(root);
 
@@ -72,7 +74,7 @@ public class AddQuestionFragment extends Fragment implements FirebaseObserver {
             getActivity().finish();
         }
 
-        HomeFragment parent = (HomeFragment) getParentFragment();
+        final HomeFragment parent = (HomeFragment) getParentFragment();
 
         data.title = questionTitle.getText().toString();
         data.author = (FirebaseAuth.getInstance().getCurrentUser().getDisplayName() + "-" + FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -81,17 +83,17 @@ public class AddQuestionFragment extends Fragment implements FirebaseObserver {
         data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
         data.description = questionDescription.getText().toString();
 
-        viewModel.addQuestion(data, this);
-    }
-
-    @Override
-    public void notifyOfCallback(Object obj) {
-        if ((boolean) obj) {
-            Toast.makeText(getActivity().getApplicationContext(), "Successfully added a question!", Toast.LENGTH_SHORT).show();
-            HomeFragment parent = (HomeFragment) getParentFragment();
-            parent.getChildFragmentManager().popBackStackImmediate();
-        } else {
-            Toast.makeText(getActivity().getApplicationContext(), "Unsuccessful when attempting to add the question!", Toast.LENGTH_SHORT).show();
-        }
+        viewModel.addQuestion(data, new ViewModelCaller(){
+            @Override
+            public void callback(Object obj) {
+                if(obj instanceof String) {
+                    Toast.makeText(getActivity().getApplicationContext(), (String) obj, Toast.LENGTH_SHORT).show();
+                }
+                else if ((boolean) obj) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully added a question!", Toast.LENGTH_SHORT).show();
+                    parent.getChildFragmentManager().popBackStackImmediate();
+                }
+            }
+        });
     }
 }
