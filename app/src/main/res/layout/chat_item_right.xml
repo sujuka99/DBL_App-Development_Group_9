@@ -17,13 +17,14 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"/>
 
+    <!--android:background="@drawable/message_right" -->
     <TextView
         android:id="@+id/show_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/message_right"
+        android:background="#e46b1b"
         android:text=" hello "
-        android:textColor="#fff"
+        android:textColor="#ffffff"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
