@@ -17,13 +17,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/show_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@drawable/message_left"
+        android:backgroundTint="#e46b1b"
+        android:padding="1sp"
         android:text="hello"
         android:textSize="18sp"
-        android:id="@+id/show_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profilePicture"
         app:layout_constraintTop_toTopOf="parent" />

@@ -23,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#e46b1b"
+        android:padding="1sp"
         android:text=" hello "
         android:textColor="#ffffff"
         android:textSize="18sp"
