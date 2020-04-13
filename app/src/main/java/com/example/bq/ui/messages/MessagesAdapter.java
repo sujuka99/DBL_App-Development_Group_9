@@ -88,7 +88,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             fullName = itemView.findViewById(R.id.message_username);
             lastMessage = itemView.findViewById(R.id.last_message);
             messageTime = itemView.findViewById(R.id.message_time);
-            messageLayout = itemView.findViewById(R.id.messages_layout);
+            messageLayout = itemView.findViewById(R.id.messages_layout2);
         }
     }
 }
