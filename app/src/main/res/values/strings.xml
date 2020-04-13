@@ -52,4 +52,5 @@
     <string name="ErrorNotLoggedIn">You must be logged in to do that!</string>
     <string name="MessageSuccessAddBook">Successfully added a book!</string>
     <string name="MessageNoSuccessAddBook">Unsuccessful when attempting to add the book!</string>
+    <string name="popup_window_text">What would you like to see?</string>
 </resources>
