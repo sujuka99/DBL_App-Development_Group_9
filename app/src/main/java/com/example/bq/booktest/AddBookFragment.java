@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bq.MainActivity;
 import com.example.bq.R;
+import com.example.bq.datamanager.DataManager;
 import com.example.bq.datamanager.ViewModelCaller;
 import com.example.bq.datamanager.datatypes.BookData;
 import com.example.bq.ui.home.HomeFragment;
@@ -181,6 +183,10 @@ public class AddBookFragment extends Fragment {
             bookPrice.setError(getString(R.string.ErrorBookPrice));
             return;
         }
+        if(bookImage.getDrawable() == null){
+            Toast.makeText(getActivity().getApplicationContext(), "Add a picture", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(getActivity().getApplicationContext(), R.string.ErrorNotLoggedIn,
@@ -188,6 +194,8 @@ public class AddBookFragment extends Fragment {
             getActivity().startActivity(new Intent());
             getActivity().finish();
         }
+
+
 
         HomeFragment parent = (HomeFragment) getParentFragment();
         assert parent != null;
@@ -204,6 +212,8 @@ public class AddBookFragment extends Fragment {
         data.location = loc.getLatitude() + ":" + loc.getLongitude();
         data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
         data.description = bookDescription.getText().toString();
+
+        DataManager.getInstance().uploadImageToStorage("books/" + data.id + "/book.png", ((BitmapDrawable) bookImage.getDrawable()).getBitmap());
 
         viewModel.addBook(data, new ViewModelCaller() {
             @Override

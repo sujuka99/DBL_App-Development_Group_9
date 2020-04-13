@@ -133,7 +133,7 @@ public class QuestionViewModel extends ViewModel {
             @Override
             public void notifyOfCallback(HashMap<String, Object> callback) {
                 // Check whether the callback was created by the addQuestion function
-                if (callback.get("action").equals(FirebaseFunction.FUNCTION_ADD_BOOK)) {
+                if (callback.get("action").equals(FirebaseFunction.FUNCTION_ADD_QUESTION)) {
                     // If so, get the response
                     HashMap<String, Object> response = (HashMap<String, Object>) callback.get("response");
                     // And check whether the request was successful
@@ -164,7 +164,7 @@ public class QuestionViewModel extends ViewModel {
             @Override
             public void notifyOfCallback(HashMap<String, Object> callback) {
                 // Check whether the callback is created by the deleteQuestion function
-                if (callback.get("action").equals(FirebaseFunction.FUNCTION_DELETE_BOOK)) {
+                if (callback.get("action").equals(FirebaseFunction.FUNCTION_DELETE_QUESTION)) {
                     // If so, load the response
                     HashMap<String, Object> response = (HashMap<String, Object>) callback.get("response");
                     // And check if the request was successful

@@ -21,7 +21,7 @@ public class FirebaseFunction {
     public static final String FUNCTION_GET_QUESTIONS = "getQuestions";
     public static final String FUNCTION_ADD_QUESTION = "addQuestion";
     public static final String FUNCTION_DELETE_QUESTION = "deleteQuestion";
-    public static final String FUNCTION_RESPOND_QUESTION = "messageUser";
+    public static final String FUNCTION_RESPOND_QUESTION = "viewBannedUsers";
 public static final String FUNCTION_GET_RESPONSES = "getQuestionResponses";
     public static final String FUNCTION_IS_ADMIN = "isAdmin";
     public static final String FUNCTION_BAN_USER = "banUser";

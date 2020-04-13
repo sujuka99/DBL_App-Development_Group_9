@@ -13,11 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.bq.R;
 import com.example.bq.datamanager.ViewModelCaller;
-import com.example.bq.datamanager.firebase.FirebaseObserver;
 import com.example.bq.datamanager.datatypes.QuestionData;
 import com.example.bq.ui.home.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,13 +81,12 @@ public class AddQuestionFragment extends Fragment {
         data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
         data.description = questionDescription.getText().toString();
 
-        viewModel.addQuestion(data, new ViewModelCaller(){
+        viewModel.addQuestion(data, new ViewModelCaller() {
             @Override
             public void callback(Object obj) {
-                if(obj instanceof String) {
+                if (obj instanceof String) {
                     Toast.makeText(getActivity().getApplicationContext(), (String) obj, Toast.LENGTH_SHORT).show();
-                }
-                else if ((boolean) obj) {
+                } else if ((boolean) obj) {
                     Toast.makeText(getActivity().getApplicationContext(), "Successfully added a question!", Toast.LENGTH_SHORT).show();
                     parent.getChildFragmentManager().popBackStackImmediate();
                 }
