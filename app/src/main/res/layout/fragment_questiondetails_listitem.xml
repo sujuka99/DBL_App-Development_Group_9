@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/response_layout"
-    android:background="#ffc299">
+    android:background="#FFCBA9">
 
     <TextView
         android:id="@+id/responseText"
