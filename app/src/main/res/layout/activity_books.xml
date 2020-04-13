@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/books_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Books"
-    android:id="@+id/books_layout">
+    android:background="#B95716"
+    android:backgroundTint="#B95716"
+    tools:context=".Books">
 
     <ProgressBar
         android:id="@+id/booksProgress"
@@ -22,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="vertical"
-        android:background="#B95716"
         app:layout_constraintBottom_toTopOf="@+id/button_create_listing"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -33,9 +34,9 @@
         android:id="@+id/button_create_listing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFCBA9"
         android:text="Register Book"
         android:textColor="#ffffff"
-        android:background="#FFCBA9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

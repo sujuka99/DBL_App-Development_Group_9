@@ -94,7 +94,7 @@ public class DataManager {
     public void uploadImageToStorage(@NonNull String path, @NonNull Bitmap bitmap) {
         StorageReference storageRef = ref.child(path);
 
-        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getWidth() * bitmap.getHeight() * 8);
+        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
         bitmap.copyPixelsToBuffer(buffer);
 
         storageRef.putBytes(buffer.array());
