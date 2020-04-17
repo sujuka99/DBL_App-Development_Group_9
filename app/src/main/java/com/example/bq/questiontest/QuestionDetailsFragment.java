@@ -1,6 +1,8 @@
 package com.example.bq.questiontest;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,11 +121,10 @@ public class QuestionDetailsFragment extends Fragment {
     private void initResponse(View root) {
         ImageButton respond = root.findViewById(R.id.btn_send);
         final EditText message = root.findViewById(R.id.text_send);
-        final QuestionDetailsFragment fragment = this;
         respond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (message.getText() == null || message.getText().toString().trim().length() == 0) {
+                if (message.getText() == null || TextUtils.isEmpty(message.getText())) {
                     message.setError("You must fill in a response!");
                     return;
                 }
@@ -143,11 +144,10 @@ public class QuestionDetailsFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), (String) obj, Toast.LENGTH_SHORT).show();
                         } else if ((boolean) obj) {
                             Toast.makeText(getActivity().getApplicationContext(), "Successfully responded!", Toast.LENGTH_SHORT).show();
-                            return;
+                            message.setText("");
                         }
                     }
                 });
-                message.setText("");
             }
         });
     }

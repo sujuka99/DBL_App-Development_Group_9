@@ -19,9 +19,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText mFullName, mEmail, mPassword;
+    EditText mEmail, mPassword;
     Button mLoginBtn;
-    TextView mregisterBtn;
+    TextView mRegisterBtn;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
 
@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
         mLoginBtn = findViewById(R.id.loginBtn);
-        mregisterBtn = findViewById(R.id.createText);
+        mRegisterBtn = findViewById(R.id.createText);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -85,8 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             progressBar.setVisibility(View.GONE);
                             finish();
-                            //FirebaseUser user = mAuth.getCurrentUser();
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -98,13 +96,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mregisterBtn.setOnClickListener(new View.OnClickListener() {
+        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
                 finish();
             }
         });
-
     }
 }

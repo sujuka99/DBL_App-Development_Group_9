@@ -1,6 +1,5 @@
 package com.example.bq.datamanager;
 
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 
@@ -15,11 +14,9 @@ import com.example.bq.datamanager.firebase.FirebaseFunction;
 import com.example.bq.datamanager.firebase.FirebaseObserver;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class DataManager {
@@ -28,12 +25,10 @@ public class DataManager {
 
     private final String DEFAULT_IMAGE_PATH = "default/default.jpg";
 
-    private final FirebaseFunctions functions;
     private final StorageReference ref;
 
     // Create a new DataManager singleton
     private DataManager() {
-        functions = FirebaseFunctions.getInstance();
         ref = FirebaseStorage.getInstance().getReference();
     }
 
@@ -83,23 +78,6 @@ public class DataManager {
                 });
             }
         });
-    }
-
-    /**
-     * Upload a image to the firebase storage
-     *
-     * @param path   - The location of where the image has to be stored
-     * @param bitmap - The bitmap to be uploaded to the server
-     */
-    public void uploadImageToStorage(@NonNull String path, @NonNull Bitmap bitmap) {
-        StorageReference storageRef = ref.child(path);
-
-        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
-        bitmap.copyPixelsToBuffer(buffer);
-
-        storageRef.putBytes(buffer.array());
-
-        buffer.clear();
     }
 
     /**
@@ -261,10 +239,10 @@ public class DataManager {
 
     /**
      * Obtain a reference to the DataManager singleton instance
+     *
      * @return The singleton instance of DataManager
      */
     public static DataManager getInstance() {
         return instance == null ? (instance = new DataManager()) : instance;
     }
-
 }

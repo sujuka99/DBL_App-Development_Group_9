@@ -1,37 +1,25 @@
 package com.example.bq.booktest;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.bq.LoginActivity;
 import com.example.bq.MainActivity;
 import com.example.bq.R;
-import com.example.bq.datamanager.DataManager;
 import com.example.bq.datamanager.ViewModelCaller;
 import com.example.bq.datamanager.datatypes.BookData;
 import com.example.bq.ui.home.HomeFragment;
@@ -40,15 +28,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.UUID;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 
 public class AddBookFragment extends Fragment {
 
-    private final int TAKE_IMAGE = 0;
-    private final int PICK_IMAGE = 1;
-
-    private ImageView bookImage;
     private EditText bookTitle;
     private EditText bookAuthor;
     private EditText bookDescription;
@@ -61,28 +43,27 @@ public class AddBookFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_addbook, container, false);
+
+        // Load the ViewModel which is shared between all book fragments
         viewModel = new ViewModelProvider(this).get(BookViewModel.class);
 
+        // Create references to all components
         initializeComponents(root);
 
         return root;
     }
 
+    /**
+     * Initialize the components for input fields and the register button which allow users to
+     * register a new book
+     *
+     * @param root Root view in which the components can be found
+     */
     private void initializeComponents(View root) {
-        bookImage = root.findViewById(R.id.bookImage);
         bookAuthor = root.findViewById(R.id.bookAuthor);
         bookDescription = root.findViewById(R.id.bookDescription);
         bookPrice = root.findViewById(R.id.bookPrice);
         bookTitle = root.findViewById(R.id.bookTitle);
-
-        Button selectImage = root.findViewById(R.id.imageSelect);
-
-        selectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
 
         Button registerBook = root.findViewById(R.id.registerBook);
 
@@ -94,79 +75,16 @@ public class AddBookFragment extends Fragment {
         });
     }
 
-    private void selectImage() {
-        final CharSequence[] options = {getString(R.string.SelectImageDialogOpt1),
-                getString(R.string.SelectImageDialogOpt2),
-                getString(R.string.SelectImageDialogCancel)};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.SelectImageDialogTitle);
-
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                switch (item) {
-                    case TAKE_IMAGE:
-                        Intent takePicture =
-                                new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(takePicture, TAKE_IMAGE);
-                        break;
-                    case PICK_IMAGE:
-                        if (ActivityCompat.checkSelfPermission(getContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                                PackageManager.PERMISSION_GRANTED) {
-                            String[] perms = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                            ActivityCompat.requestPermissions(getActivity(), perms, PICK_IMAGE);
-                        }
-                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(pickPhoto, PICK_IMAGE);
-                        break;
-                    default:
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        });
-        builder.show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != RESULT_CANCELED) {
-            if (resultCode == RESULT_OK && data != null) {
-                switch (requestCode) {
-                    case TAKE_IMAGE:
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        bookImage.setImageBitmap(selectedImage);
-                        break;
-                    case PICK_IMAGE:
-                        Uri selectedImage2 = data.getData();
-                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        if (selectedImage2 != null) {
-                            Cursor cursor = getActivity().getContentResolver().query(selectedImage2,
-                                    filePathColumn, null, null, null);
-                            if (cursor != null) {
-                                cursor.moveToFirst();
-
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String picturePath = cursor.getString(columnIndex);
-                                bookImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-                                cursor.close();
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
+    /**
+     * Register a book for sale, checks all input fields for validity of the input and throws errors
+     * in the EditText fields if not.
+     * If all fields are valid, a new BookData object is created and the ViewModel is called to handle
+     * adding the new book
+     */
     private void registerBook() {
         BookData data = new BookData();
 
+        // Check for empty fields
         if (TextUtils.isEmpty(bookTitle.getText().toString())) {
             bookTitle.setError(getString(R.string.ErrorBookTitle));
             return;
@@ -183,20 +101,17 @@ public class AddBookFragment extends Fragment {
             bookPrice.setError(getString(R.string.ErrorBookPrice));
             return;
         }
-        if(bookImage.getDrawable() == null){
-            Toast.makeText(getActivity().getApplicationContext(), "Add a picture", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
+        // Now that all fields are filled in, make sure that the user is actually is logged in, if
+        // not, return the user to the Login Screen
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(getActivity().getApplicationContext(), R.string.ErrorNotLoggedIn,
                     Toast.LENGTH_SHORT).show();
-            getActivity().startActivity(new Intent());
+            getActivity().startActivity(new Intent(getActivity().getApplicationContext(), LoginActivity.class));
             getActivity().finish();
         }
 
-
-
+        // After all checks are done, fill in all information into the BookData object
         HomeFragment parent = (HomeFragment) getParentFragment();
         assert parent != null;
 
@@ -204,17 +119,22 @@ public class AddBookFragment extends Fragment {
         data.author = bookAuthor.getText().toString();
         data.study = parent.major;
         data.price = bookPrice.getText().toString();
+        data.description = bookDescription.getText().toString();
+        // Store the account that is selling as 'displayName'-'id' for ease of reference
         data.seller = (FirebaseAuth.getInstance().getCurrentUser().getDisplayName()
                 + "-"
                 + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        // Generate a new id for this book, make it have no - as ids of firebase do not have them
+        // either. (Stylistic choice)
         data.id = UUID.randomUUID().toString().replaceAll("-", "");
+        // Get the user its location
         Location loc = MainActivity.userLocation;
-        data.location = loc.getLatitude() + ":" + loc.getLongitude();
+        // And set the location accordingly
+        data.location = loc == null ? "0:0" : loc.getLatitude() + ":" + loc.getLongitude();
+        // Add a timestamp
         data.timeStamp = Long.toString(Calendar.getInstance().getTimeInMillis());
-        data.description = bookDescription.getText().toString();
 
-        DataManager.getInstance().uploadImageToStorage("books/" + data.id + "/book.png", ((BitmapDrawable) bookImage.getDrawable()).getBitmap());
-
+        // Finally, let the ViewModel register the book and wait for the callback
         viewModel.addBook(data, new ViewModelCaller() {
             @Override
             public void callback(Object obj) {
@@ -222,6 +142,8 @@ public class AddBookFragment extends Fragment {
                 Context appContext = getActivity().getApplicationContext();
                 assert (appContext != null);
 
+                // Our callback can be either a string or true, if it is a string, then it must be an error
+                // Otherwise it was successful and we close the fragment
                 if (obj instanceof String) {
                     Toast.makeText(appContext, (String) obj, Toast.LENGTH_SHORT).show();
                 } else if ((boolean) obj) {

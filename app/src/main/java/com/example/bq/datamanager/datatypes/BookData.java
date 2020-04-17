@@ -2,8 +2,10 @@ package com.example.bq.datamanager.datatypes;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Record class to store and edit all data regarding a (un)registered book
+ */
 public class BookData {
     public String title;
     public String author;
@@ -15,6 +17,11 @@ public class BookData {
     public String study;
     public String timeStamp;
 
+    /**
+     * Convert a HashMap into a new BookData Object
+     *
+     * @param data A HashMap from which a BookData object can be constructed
+     */
     public BookData(HashMap<String, String> data) {
         this.title = data.containsKey("title") ? data.get("title") : null;
         this.author = data.containsKey("author") ? data.get("author") : null;
@@ -27,9 +34,17 @@ public class BookData {
         this.timeStamp = data.containsKey("timeStamp") ? data.get("timeStamp") : null;
     }
 
+    /**
+     * Create a new empty BookData object
+     */
     public BookData() {
     }
 
+    /**
+     * Convert a BookData object to a HashMap for serialization purposes
+     *
+     * @return A HashMap containing all Non Null data stored in the BookData object
+     */
     public HashMap<String, String> toMap() {
         HashMap<String, String> result = new HashMap<>();
 
@@ -46,8 +61,6 @@ public class BookData {
 
         // Now remove all keys that refer to null, as our fields could be null but we do not
         // wish to retain keys that map to null.
-        // This allows for easier unit testing, as we now only have to test that
-        // For all keys, getValue != null;
         result.values().removeAll(Collections.singleton(null));
         return result;
     }

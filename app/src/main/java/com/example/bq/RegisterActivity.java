@@ -50,7 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-
                 //Check if the entered data is valid
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is required");

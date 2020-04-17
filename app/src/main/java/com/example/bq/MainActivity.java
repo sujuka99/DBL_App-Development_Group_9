@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,7 +37,6 @@ import com.example.bq.datamanager.firebase.FirebaseObserver;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     FirebaseUser user;
 
-    public static boolean isAdmin;
+    public static boolean isAdmin = false;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -63,9 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
         //check if the user is still logged in
         if (user == null) {
+            // If not, return the user to the Login Screen
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         } else {
+            // If the user is still logged in, check if the account has not been banned since
+            // the user opened the app last
             user.reload().addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -76,14 +79,15 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        // Check if the user is an administrator
         DataManager.getInstance().isAdmin(user.getUid(), new FirebaseObserver() {
             @Override
             public void notifyOfCallback(HashMap<String, Object> callback) {
-                if(callback.get("action").equals(FirebaseFunction.FUNCTION_IS_ADMIN)){
+                if (callback.get("action").equals(FirebaseFunction.FUNCTION_IS_ADMIN)) {
                     HashMap<String, Object> response = (HashMap<String, Object>) callback.get("response");
-                    if((boolean) response.get("success")){
+                    if ((boolean) response.get("success")) {
                         isAdmin = (boolean) response.get("admin");
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), (String) response.get("error"), LENGTH_SHORT).show();
                     }
                 }
@@ -98,7 +102,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Ensure we have access to the user location, if not ask permission
+        // Currently, the user cannot decline, if they do the app crashes
         CheckPermission();
+
+        // Create a new location listener to request location updates
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -124,22 +132,22 @@ public class MainActivity extends AppCompatActivity {
 
         getLocation();
 
+        // Get the user last known location asap
+        // This is because the getLocation() method only responds to changes, thus if the user
+        // does not move their phone opens the app and then opens the book page, their location is
+        // still null resulting in a crash
+        // This fixes it by setting their location to their last known location
         try {
             userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } catch (SecurityException e) {
             e.printStackTrace();
         }
 
-
+        // Default fab, not used in the app
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.hide();
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        // Create the Navigation menu
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -158,19 +166,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-        Log.d("CreateOptionsMenu", "Executed before isAdmin becomes true " + isAdmin);
-        if (isAdmin) {
-            menu.findItem(R.id.action_admin).setVisible(true);
-        }
+        menu.findItem(R.id.action_admin).setVisible(isAdmin);
         return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(final Menu menu){
-        if (isAdmin) {
-            menu.findItem(R.id.action_admin).setVisible(true);
-        }
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        // Allow the property to change, as isAdmin is by default false and can change to true after
+        // the server has processed the request, so update it every time the menu is opened
+        menu.findItem(R.id.action_admin).setVisible(isAdmin);
         return true;
     }
 
@@ -196,6 +200,12 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Open the administrator window which allows admins to ban other users via email in the supplied
+     * view
+     *
+     * @param view View in which the admin window must be opened
+     */
     public void openAdminWindow(View view) {
         // inflate the layout of the popup window
         LayoutInflater inflater = (LayoutInflater)
@@ -232,20 +242,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText email = popupView.findViewById(R.id.adminUser);
-                if(email.getText().toString().trim().length() == 0){
+                if (TextUtils.isEmpty(email.getText())) {
                     email.setError("Fill in the email of the user to ban!");
                     return;
                 }
 
+                // Tell the server to attempt to ban the specified user
                 DataManager.getInstance().banUser(email.getText().toString(), new FirebaseObserver() {
                     @Override
                     public void notifyOfCallback(HashMap<String, Object> callback) {
-                        if(callback.get("action").equals(FirebaseFunction.FUNCTION_BAN_USER)){
+                        if (callback.get("action").equals(FirebaseFunction.FUNCTION_BAN_USER)) {
                             HashMap<String, Object> response = (HashMap<String, Object>) callback.get("response");
-                            if((boolean) response.get("success")){
+                            if ((boolean) response.get("success")) {
                                 Toast.makeText(getApplicationContext(), "Banned the user", LENGTH_SHORT).show();
                                 popupWindow.dismiss();
-                            }else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), (String) response.get("error"), LENGTH_SHORT).show();
                             }
 
@@ -269,6 +280,9 @@ public class MainActivity extends AppCompatActivity {
         locationManager.removeUpdates(locationListener); //or MainActivity.this
     }
 
+    /**
+     * Request location updates for the main activity
+     */
     public void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -278,6 +292,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check if we have location permissions, if not request them
+     */
     public void CheckPermission() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);

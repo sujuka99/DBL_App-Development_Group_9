@@ -1,7 +1,11 @@
 package com.example.bq.datamanager.datatypes;
 
+import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * Record class to store all data regarding a (un)registered Question
+ */
 public class QuestionData {
     public String title;
     public String description;
@@ -10,11 +14,17 @@ public class QuestionData {
     public String study;
     public String timeStamp;
 
+    /**
+     * Create a new empty QuestionData object
+     */
     public QuestionData() {
     }
 
-    ;
-
+    /**
+     * Convert a HashMap into a new QuestionData Object
+     *
+     * @param data A HashMap from which a QuestionData object can be constructed
+     */
     public QuestionData(HashMap<String, String> data) {
         this.title = data.containsKey("title") ? data.get("title") : null;
         this.author = data.containsKey("author") ? data.get("author") : null;
@@ -24,26 +34,24 @@ public class QuestionData {
         this.timeStamp = data.containsKey("timeStamp") ? data.get("timeStamp") : null;
     }
 
+    /**
+     * Convert a UserData object to a HashMap for serialization purposes
+     *
+     * @return A HashMap containing all Non Null data stored in the UserData object
+     */
     public HashMap<String, String> toMap() {
         HashMap<String, String> result = new HashMap<>();
-        if (id != null) {
-            result.put("id", id);
-        }
-        if (title != null) {
-            result.put("title", title);
-        }
-        if (study != null) {
-            result.put("study", study);
-        }
-        if (author != null) {
-            result.put("author", author);
-        }
-        if (description != null) {
-            result.put("description", description);
-        }
-        if (timeStamp != null) {
-            result.put("timeStamp", timeStamp);
-        }
+        // Add all our fields to the map
+        result.put("id", id);
+        result.put("title", title);
+        result.put("study", study);
+        result.put("author", author);
+        result.put("description", description);
+        result.put("timeStamp", timeStamp);
+
+        // Now remove all keys that refer to null, as our fields could be null but we do not
+        // wish to retain keys that map to null.
+        result.values().removeAll(Collections.singleton(null));
         return result;
     }
 }
